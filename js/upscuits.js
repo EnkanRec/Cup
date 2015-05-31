@@ -118,7 +118,6 @@ myApp.dashboard = (function($) {
 			}
 		}
 		data.log = $.merge([], data.log); //make sure log is set
-		console.log(data.log);
 		var endtime,endtype,starttime,starttype,fintime,period,fin = [],lastlen = 1;
 		period = 86400000*1;
 		endtime = Date.parse(new Date().toString());
@@ -186,7 +185,6 @@ myApp.dashboard = (function($) {
 
 			}
 		}
-		console.log(fin);
 		var st;
 		data.progress=[];
 		while(st = fin.pop()) {
@@ -226,7 +224,6 @@ myApp.dashboard = (function($) {
 			{title: '7', uptimes:uptimes[1], uptime: uptimeb[1], uptype: getUptimeColor, upsign: getUptimeSign},
 			{title: 'all', uptimes:uptimes[0], uptime: uptimeb[0], uptype: getUptimeColor, upsign: getUptimeSign}
 		];
-		console.log(data);
 		var $output = $(Mustache.render(_template, data));
 
 		//attach popover listners
