@@ -131,7 +131,7 @@ myApp.dashboard = (function($) {
 
 		// gather data for the graphs
 		var uptimes = data.customuptimeratio.split("-");
-		for (var a=1; a<6; a++) {
+		for (var a=6; a>1; a--) {
 			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
 		}
 		//uptimes.push(data.alltimeuptimeratio);
@@ -143,7 +143,7 @@ myApp.dashboard = (function($) {
 			{title: '5',  uptime: parseFloat(uptimes[4]), uptype: getUptimeColor},
 			{title: '6',  uptime: parseFloat(uptimes[5]), uptype: getUptimeColor},
 			{title: '7',  uptime: parseFloat(uptimes[6]), uptype: getUptimeColor},
-			{title: 'all',  uptime: parseFloat(uptimes[7]), uptype: getUptimeColor}                                                                                                                                                                                                             
+			{title: 'all',  uptime: parseFloat(uptimes[7]), uptype: getUptimeColor}
 		];
 
 		var $output = $(Mustache.render(_template, data));
