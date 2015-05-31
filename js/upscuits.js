@@ -217,7 +217,7 @@ myApp.dashboard = (function($) {
 	}
 
 	function getUptimeColor() {
-		var upt = parseInt(this.type, 10);
+		var upt = parseInt(this.uptime, 10);
 		if (upt >= 99.5) {
 			return "success";
 		} else if (upt >= 99) {
