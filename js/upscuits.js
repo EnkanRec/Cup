@@ -33,7 +33,8 @@ myApp.dashboard = (function($) {
 		$_container = {},
 		//$_prograss = {},
 		//$_countdown = {},
-		$_lastUpdate = {};
+		$_lastUpdate = {},
+		error = false;
 
 	function init() {
 		_start = Date.now();
@@ -42,7 +43,7 @@ myApp.dashboard = (function($) {
 		//$_prograss = $('.loading');
 		//$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
-
+		error = false;
 
 
 		for (var i in __apiKeys) {
@@ -101,12 +102,14 @@ myApp.dashboard = (function($) {
 				data.statusicon = "exclamation-sign";
 				data.label = "warning";
 				data.alert = "warning";
+				error = true;
 				break;
 			case 9:
 				data.statustxt = "故障";
 				data.statusicon = "remove";
 				data.label = "danger";
 				data.alert = "danger";
+				error = true;
 				break;
 		}
 
@@ -171,7 +174,19 @@ myApp.dashboard = (function($) {
 
 		//append it in the container
 		$_container.append($output);
-		$('.set-tooltip').tooltip({html:true});
+		_loaded++;
+		if (_loaded >= __apiKeys.length) {
+			_loaded = 0;
+			$('.set-tooltip').tooltip({html:true});
+			if (error) {
+				$('#stattip-err').removeClass('hide');
+				$('#stattip-ok').addClass('hide');
+			} else {
+				$('#stattip-ok').removeClass('hide');
+				$('#stattip-err').addClass('hide');
+			}
+		}
+
 		//updateProgressBar();
 	}
 
@@ -194,11 +209,12 @@ myApp.dashboard = (function($) {
 		secs = (secs < 10) ? "0" + secs : secs;
 
 		//$_countdown.width(100 - (elapsed * (100 / _refresh)) + '%');
-		$_lastUpdate.html(mins + ':' + secs);
 
 		if (elapsed > _refresh) {
 			clearInterval(_intervalId);
 			init();
+		} else {
+			$_lastUpdate.html(mins + ':' + secs);
 		}
 	}
 
