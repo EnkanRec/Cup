@@ -84,12 +84,12 @@ myApp.dashboard = (function($) {
 			case 0:
 				data.statustxt = "未知";
 				data.statusicon = "question-sign";
-				data.label = "";
+				data.label = "default";
 				break;
 			case 1:
 				data.statustxt = "未知";
 				data.statusicon = "question-sign";
-				data.label = "";
+				data.label = "default";
 				break;
 			case 2:
 				data.statustxt = "正常";
