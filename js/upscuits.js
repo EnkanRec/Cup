@@ -39,21 +39,8 @@ myApp.dashboard = (function($) {
 			getUptime(__apiKeys[i], i);
 		}
 
-		attachListners($('html'));
 		_intervalId = setInterval(countdown, 1000);
 	}
-
-	function attachListners($target) {
-		$target.find('.tip').tooltip({
-			placement: 'bottom'
-		});
-		$target.find('body').mouseup(function(event) {
-			if ($('.popover-inner').length) {
-				$('a.log').popover('hide');
-			}
-		});
-	}
-
 	/* load uptime variables from uptimerobot
 	* this calls jsonUptimeRobotApi() when loaded
 	*/
@@ -114,7 +101,7 @@ myApp.dashboard = (function($) {
 			if (dateTime < lastMonth) {
 				data.log.splice(i, i + 1);
 			} else {
-				data.log[i].datetime = ""+dateTime;
+				data.log[i].datetime = dateTime;
 			}
 		}
 		data.log = $.merge([], data.log); //make sure log is set
@@ -192,10 +179,6 @@ myApp.dashboard = (function($) {
 													stattip:Type2Word(parseInt(st.type))+" ("+num2string(st.left)+" ~ "+num2string(st.right)+")"
 			})
 		}
-		// interface of log-stuf like icons
-		data.typeicon = getLogIcon;
-		data.labeltype = getLogType;
-
 		// gather data for the graphs
 		var uptimes = data.customuptimeratio.split("-");
 		for (var a=6; a>1; a--) {
@@ -226,16 +209,6 @@ myApp.dashboard = (function($) {
 		];
 		var $output = $(Mustache.render(_template, data));
 
-		//attach popover listners
-		$output.find('a.log').click(function() {
-			$(this).tooltip('hide');
-		}).popover({
-			placement: 'bottom',
-			html: true,
-			content: $output.find('div.log' + data.id).html()
-		});
-		attachListners($output);
-
 		//append it in the container
 		showarr[ids] = $output;
 		for (var k=0;k<__apiKeys.length;k++) {
@@ -262,17 +235,7 @@ myApp.dashboard = (function($) {
 			}
 		}
 
-		//updateProgressBar();
 	}
-
-	/* update progress bar of loaded servers
-	function updateProgressBar() {
-		_loaded++;
-		$_prograss.css('width', Math.round(_loaded / __apiKeys.length) * 100 + '%');
-		if (_loaded >= __apiKeys.length) {
-			$_prograss.parent().slideUp();
-		}
-	}*/
 
 	/* count down till next refresh */
 	function countdown() {
@@ -290,22 +253,6 @@ myApp.dashboard = (function($) {
 			init();
 		} else {
 			$_lastUpdate.html(mins + ':' + secs);
-		}
-	}
-
-	/* set the icon in front of every log-line */
-	function getLogIcon() {
-		switch (parseInt(this.type, 10)) {
-			case 1:
-				return "chevron-down";
-			case 2:
-				return "chevron-up";
-			case 99:
-				return "pause";
-			case 98:
-				return "play";
-			default:
-				return this.type;
 		}
 	}
 
@@ -368,9 +315,7 @@ myApp.dashboard = (function($) {
 		}
 	}
 
-	//expose dashboard (PUBLIC API)
 	return {
-		init: init,
-		placeServer: placeServer
+		init: init
 	};
 }(jQuery));
