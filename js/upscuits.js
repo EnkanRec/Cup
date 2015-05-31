@@ -50,7 +50,6 @@ myApp.dashboard = (function($) {
 		}
 
 		attachListners($('html'));
-
 		_intervalId = setInterval(countdown, 1000);
 	}
 
@@ -134,25 +133,28 @@ myApp.dashboard = (function($) {
 		for (var a=6; a>1; a--) {
 			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
 		}
+		var uptimeb = [];
 		for (a=0; a<uptimes.length; a++) {
 			if (uptimes[a]>=99.97) {
-				uptimes[a] = "100";
-			} else if (uptimes[a]<0) {
-				uptimes[a] = "0.00";
+				uptimeb[a] = "可用率 100%";
+			} else if (uptimes[a]>=99.5) {
+				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number((100-uptimes[a])*14.40).toFixed(0)+" 分钟";
+			} else if (uptimes[a]<=0) {
+				uptimeb[a] = "可用率 0.00%<br>故障 24 小时";
 			} else {
-				uptimes[a] = new Number(uptimes[a]).toFixed(2);
+				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number((100-uptimes[a])*0.24).toFixed(1)+" 小时";;
 			}
 		}
 		//uptimes.push(data.alltimeuptimeratio);
 		data.charts = [
-			{title: '1',  uptime: uptimes[7], uptype: getUptimeColor},
-			{title: '2',  uptime: uptimes[6], uptype: getUptimeColor},
-			{title: '3',  uptime: uptimes[5], uptype: getUptimeColor},
-			{title: '4',  uptime: uptimes[4], uptype: getUptimeColor},
-			{title: '5',  uptime: uptimes[3], uptype: getUptimeColor},
-			{title: '6',  uptime: uptimes[2], uptype: getUptimeColor},
-			{title: '7',  uptime: uptimes[1], uptype: getUptimeColor},
-			{title: 'all',  uptime: uptimes[0], uptype: getUptimeColor}
+			{title: '1', uptimes:uptimes[7], uptime: uptimeb[7], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '2', uptimes:uptimes[6], uptime: uptimeb[6], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '3', uptimes:uptimes[5], uptime: uptimeb[5], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '4', uptimes:uptimes[4], uptime: uptimeb[4], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '5', uptimes:uptimes[3], uptime: uptimeb[3], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '6', uptimes:uptimes[2], uptime: uptimeb[2], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '7', uptimes:uptimes[1], uptime: uptimeb[1], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: 'all', uptimes:uptimes[0], uptime: uptimeb[0], uptype: getUptimeColor, upsign: getUptimeSign}
 		];
 
 		var $output = $(Mustache.render(_template, data));
@@ -169,7 +171,7 @@ myApp.dashboard = (function($) {
 
 		//append it in the container
 		$_container.append($output);
-
+		$('.set-tooltip').tooltip({html:true});
 		//updateProgressBar();
 	}
 
@@ -233,13 +235,24 @@ myApp.dashboard = (function($) {
 	}
 
 	function getUptimeColor() {
-		var upt = parseInt(this.uptime, 10);
+		var upt = parseInt(this.uptimes, 10);
 		if (upt >= 99.90) {
 			return "success";
 		} else if (upt >= 98.00) {
 			return "warning";
 		} else {
 			return "danger";
+		}
+	}
+
+	function getUptimeSign() {
+		var upt = parseInt(this.uptimes, 10);
+		if (upt >= 99.90) {
+			return "ok-sign";
+		} else if (upt >= 98.00) {
+			return "exclamation-sign";
+		} else {
+			return "remove-sign";
 		}
 	}
 

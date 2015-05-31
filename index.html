@@ -14,10 +14,30 @@
   	height: 50px;
   }
 	.wname {
-		font-size:15px;
+		font-size:16px;
 	}
 	.label-status {
   	margin-right: 5px;
+	}
+	.check>tbody>tr>td {
+		padding-top: 11px;
+		padding-bottom: 11px;
+	}
+	.check th {
+		text-align: center;
+	}
+	.check .center {
+		text-align: center;
+		vertical-align: middle;
+	}
+	.status-success {
+  	color: #5cb85c
+	}
+	.status-warning {
+  	color: #f0ad4e
+	}
+	.status-danger {
+  	color: #d9534f
 	}
 	</style>
 </head>
@@ -47,10 +67,10 @@
 	</div>
 	<div class="container">
 		<div class="table-responsive">
-			<table class="table table-hover">
+			<table class="table table-hover check">
 				<thead>
 					<tr>
-						<th style="width:20%">名称</th>
+						<th style="width:20%"></th>
 						<th style="width:10%">近30天</th>
 						<th style="width:10%">7天前</th>
 						<th style="width:10%">6天前</th>
@@ -92,8 +112,8 @@
 				</div>-->
 			</td>
 			{{#charts}}
-			<td>
-			<span class="label label-{{uptype}}">{{uptime}}%</span>
+			<td class="center">
+			<span class="status-{{uptype}} set-tooltip" data-toggle="tooltip" data-placement="top" title="{{uptime}}"><span class="glyphicon glyphicon-{{upsign}}"></span></span>
 			</td>
 			{{/charts}}
 		</tr>
