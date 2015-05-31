@@ -135,7 +135,7 @@ myApp.dashboard = (function($) {
 			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
 		}
 		for (a=0; a<uptimes.length-1; a++) {
-			if (uptimes[a]>=100) {
+			if (uptimes[a]>=99.95) {
 				uptimes[a] = "100";
 			} else if (uptimes[a]<0) {
 				uptimes[a] = "0.00";
@@ -145,14 +145,14 @@ myApp.dashboard = (function($) {
 		}
 		//uptimes.push(data.alltimeuptimeratio);
 		data.charts = [
-			{title: '1',  uptime: uptimes[0], uptype: getUptimeColor},
-			{title: '2',  uptime: uptimes[1], uptype: getUptimeColor},
-			{title: '3',  uptime: uptimes[2], uptype: getUptimeColor},
-			{title: '4',  uptime: uptimes[3], uptype: getUptimeColor},
-			{title: '5',  uptime: uptimes[4], uptype: getUptimeColor},
-			{title: '6',  uptime: uptimes[5], uptype: getUptimeColor},
-			{title: '7',  uptime: uptimes[6], uptype: getUptimeColor},
-			{title: 'all',  uptime: uptimes[7], uptype: getUptimeColor}
+			{title: '1',  uptime: uptimes[7], uptype: getUptimeColor},
+			{title: '2',  uptime: uptimes[6], uptype: getUptimeColor},
+			{title: '3',  uptime: uptimes[5], uptype: getUptimeColor},
+			{title: '4',  uptime: uptimes[4], uptype: getUptimeColor},
+			{title: '5',  uptime: uptimes[3], uptype: getUptimeColor},
+			{title: '6',  uptime: uptimes[2], uptype: getUptimeColor},
+			{title: '7',  uptime: uptimes[1], uptype: getUptimeColor},
+			{title: 'all',  uptime: uptimes[0], uptype: getUptimeColor}
 		];
 
 		var $output = $(Mustache.render(_template, data));
