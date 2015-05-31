@@ -32,7 +32,7 @@ myApp.dashboard = (function($) {
 		_refresh = ((typeof(__refresh) == "number") ? __refresh : 300),
 		$_container = {},
 		$_prograss = {},
-		$_countdown = {},
+		//$_countdown = {},
 		$_lastUpdate = {};
 
 	function init() {
@@ -40,7 +40,7 @@ myApp.dashboard = (function($) {
 		_template = $('#server-template').html();
 		$_container = $('#server-container').html('');
 		$_prograss = $('.loading');
-		$_countdown = $('.countdown');
+		//$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
 
 
@@ -175,7 +175,7 @@ myApp.dashboard = (function($) {
 
 		secs = (secs < 10) ? "0" + secs : secs;
 
-		$_countdown.width(100 - (elapsed * (100 / _refresh)) + '%');
+		//$_countdown.width(100 - (elapsed * (100 / _refresh)) + '%');
 		$_lastUpdate.html(mins + ':' + secs);
 
 		if (elapsed > _refresh) {
