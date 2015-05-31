@@ -2,7 +2,7 @@
 
 	Upscuits | short for uptime-biscuit
 	A quick overview of your server's uptime served on a nice dinner-tray.
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
@@ -42,20 +42,16 @@ myApp.dashboard = (function($) {
 		$_prograss = $('.loading');
 		$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
-	
+
 		//translation
-		if (__language === false) {
-			$('.navbar-nav-language').remove();
-		} else {
-			$.i18n.init({
+		$.i18n.init({
 				lng: __language,
 				fallbackLng: false,
 				detectLngQS: 'lang',
-				resGetPath: 'js/locales/__lng__-__ns__.json' 
+				resGetPath: 'js/locales/__lng__-__ns__.json'
 			}, function(t) {
 				$('[data-i18n]').i18n();
 			});
-		}
 
 		if (typeof(__apiKeys) == "undefined" || __apiKeys.length < 1) {
 			var $output = $(Mustache.render($('#no-monitors-template').html()));
@@ -88,7 +84,7 @@ myApp.dashboard = (function($) {
 	}
 
 	/* load uptime variables from uptimerobot
-	* this calls jsonUptimeRobotApi() when loaded  
+	* this calls jsonUptimeRobotApi() when loaded
 	*/
 	function getUptime(apikey) {
 		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30-365&format=json&logs=1";
@@ -150,7 +146,7 @@ myApp.dashboard = (function($) {
 		// interface of log-stuf like icons
 		data.typeicon = getLogIcon;
 		data.labeltype = getLogType;
-		
+
 		// gather data for the graphs
 		var uptimes = data.customuptimeratio.split("-");
 		uptimes.push(data.alltimeuptimeratio);
@@ -164,7 +160,7 @@ myApp.dashboard = (function($) {
 
 		//render the sh!t
 		var $output = $(Mustache.render(_template, data));
-		
+
 		//initialize the graphs
 		placeCharts($output);
 
