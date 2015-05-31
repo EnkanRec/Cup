@@ -34,15 +34,25 @@ myApp.dashboard = (function($) {
 		//$_prograss = {},
 		//$_countdown = {},
 		$_lastUpdate = {},
+		$_servertitle = {},
+		tmpdate,
+		datestr = "",
 		error = false;
-
 	function init() {
 		_start = Date.now();
 		_template = $('#server-template').html();
 		$_container = $('#server-container').html('');
+		$_servertitle = $('#server-title').html('');
 		//$_prograss = $('.loading');
 		//$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
+		$_servertitle.append("<th style=\"width:20%\"></th>");
+		$_servertitle.append("<th style=\"width:10%\">近30天</th>");
+		for (var d=6;d>=0;d--) {
+			tmpdate = new Date(Date.parse(new Date().toString()) - 86400000*d);
+			datestr = (tmpdate.getMonth()+1) + "." + tmpdate.getDate();
+			$_servertitle.append("<th style=\"width:10%\">"+datestr+"</th>");
+		}
 		error = false;
 
 
@@ -178,6 +188,7 @@ myApp.dashboard = (function($) {
 		if (_loaded >= __apiKeys.length) {
 			_loaded = 0;
 			$('.set-tooltip').tooltip({html:true});
+			$('#stattip-load').addClass('hide');
 			if (error) {
 				$('#stattip-err').removeClass('hide');
 				$('#stattip-ok').addClass('hide');

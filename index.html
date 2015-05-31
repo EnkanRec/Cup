@@ -66,25 +66,19 @@
 		</div>
 	</div>
 	<div class="container">
-		<div id="stattip-err" class="alert alert-danger hide" role="alert">
+		<div id="stattip-err" class="alert alert-warning hide" role="alert">
 			<b>当前状态：</b>酷Q部分服务发生异常，我们将尽快修复。
 		</div>
 		<div id="stattip-ok" class="alert alert-success hide" role="alert">
 			<b>当前状态：</b>酷Q所有服务正常运行中，没有发现异常。
 		</div>
+		<div id="stattip-load" class="alert alert-info" role="alert">
+			<b>当前状态：</b>正在检测运行状态，请稍候..
+		</div>
 		<div class="table-responsive">
 			<table class="table table-hover check">
 				<thead>
-					<tr>
-						<th style="width:20%"></th>
-						<th style="width:10%">近30天</th>
-						<th style="width:10%">7天前</th>
-						<th style="width:10%">6天前</th>
-						<th style="width:10%">5天前</th>
-						<th style="width:10%">4天前</th>
-						<th style="width:10%">前天</th>
-						<th style="width:10%">昨天</th>
-						<th style="width:10%">今天</th>
+					<tr id="server-title">
 					</tr>
 				</thead>
 				<tbody id="server-container"></tbody>
