@@ -166,7 +166,7 @@ myApp.dashboard = (function($) {
 	function placeCharts($container) {
 		var options = {
 			lines: 12,
-			angle: 1,
+			angle: 0.42,
 			lineWidth: 0.2,
 			limitMax: 'false',
 			colorStart: '#4DAD48',
