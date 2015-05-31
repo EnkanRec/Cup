@@ -2,9 +2,8 @@
 <html lang="zh-cn">
 <head>
 	<meta charset="utf-8">
-
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>酷Q状态</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<style>
@@ -71,8 +70,8 @@
 	<script type="template/mustache" id="server-template">
 		<tr class="{{alert}}">
 			<td>
-				<span class="wname">{{friendlyname}}</span>
 				<span class="label label-status label-{{label}}"><span class="glyphicon glyphicon-{{statusicon}}"></span> {{statustxt}}</span>
+				<span class="wname">{{friendlyname}}</span>
 				<!--<div class="btn-group">
 					<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><span class="glyphicon glyphicon-time"></span></a>
 				</div>
