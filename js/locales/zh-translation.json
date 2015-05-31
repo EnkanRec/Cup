@@ -1,8 +1,8 @@
-{ 
+{
 	"head": {
-		"title": "Upscuits | Uptime biscuits",
-		"subtitle": "uptime-biscuit的缩写",
-		"hero": "在“晚餐盘”上一览你服务器的可用性."
+		"title": "CoolQ 状态",
+		"subtitle": "status.cqp.cc",
+		"hero": "关注酷Q服务运行状态"
 	},
 	"times": {
 		"Last 24 hr": "过去24小时",
