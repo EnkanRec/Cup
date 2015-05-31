@@ -134,7 +134,7 @@ myApp.dashboard = (function($) {
 		for (var a=6; a>1; a--) {
 			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
 		}
-		for (a=0; a<uptimes.length-1; a++) {
+		for (a=0; a<uptimes.length; a++) {
 			if (uptimes[a]>=99.95) {
 				uptimes[a] = "100";
 			} else if (uptimes[a]<0) {
