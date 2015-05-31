@@ -133,9 +133,9 @@ myApp.dashboard = (function($) {
 		var uptimes = data.customuptimeratio.split("-");
 		uptimes.push(data.alltimeuptimeratio);
 		data.charts = [
-			{title: 'Last Day',  uptime: parseFloat(uptimes[0]), uptype: getUptimeColor()},
-			{title: 'Last Week', uptime: parseFloat(uptimes[1]), uptype: getUptimeColor()},
-			{title: 'Last Month',uptime: parseFloat(uptimes[2]), uptype: getUptimeColor()}
+			{title: 'Last Day',  uptime: parseFloat(uptimes[0]), uptype: getUptimeColor},
+			{title: 'Last Week', uptime: parseFloat(uptimes[1]), uptype: getUptimeColor},
+			{title: 'Last Month',uptime: parseFloat(uptimes[2]), uptype: getUptimeColor}
 		];
 
 		//render the sh!t
