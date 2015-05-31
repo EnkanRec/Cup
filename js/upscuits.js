@@ -2,7 +2,7 @@
 
 	Upscuits | short for uptime-biscuit
 	A quick overview of your server's uptime served on a nice dinner-tray.
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
@@ -31,49 +31,37 @@ myApp.dashboard = (function($) {
 		_start = Date.now(),
 		_refresh = ((typeof(__refresh) == "number") ? __refresh : 300),
 		$_container = {},
-		$_prograss = {},
-		$_countdown = {},
-		$_lastUpdate = {};
-
+		//$_prograss = {},
+		//$_countdown = {},
+		$_lastUpdate = {},
+		$_servertitle = {},
+		tmpdate,
+		datestr = "",
+		error = false;
 	function init() {
 		_start = Date.now();
 		_template = $('#server-template').html();
 		$_container = $('#server-container').html('');
-		$_prograss = $('.loading');
-		$_countdown = $('.countdown');
+		$_servertitle = $('#server-title').html('');
+		//$_prograss = $('.loading');
+		//$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
-	
-		//translation
-		if (__language === false) {
-			$('.navbar-nav-language').remove();
-		} else {
-			$.i18n.init({
-				lng: __language,
-				fallbackLng: false,
-				detectLngQS: 'lang',
-				resGetPath: 'js/locales/__lng__-__ns__.json' 
-			}, function(t) {
-				$('[data-i18n]').i18n();
-			});
+		$_servertitle.append("<th style=\"width:20%\"></th>");
+		$_servertitle.append("<th style=\"width:10%\">近30天</th>");
+		for (var d=6;d>=0;d--) {
+			tmpdate = new Date(Date.parse(new Date().toString()) - 86400000*d);
+			datestr = (tmpdate.getMonth()+1) + "." + tmpdate.getDate();
+			$_servertitle.append("<th style=\"width:10%\">"+datestr+"</th>");
+		}
+		error = false;
+
+
+		for (var i in __apiKeys) {
+			getUptime(__apiKeys[i]);
 		}
 
-		if (typeof(__apiKeys) == "undefined" || __apiKeys.length < 1) {
-			var $output = $(Mustache.render($('#no-monitors-template').html()));
-
-			//translate
-			$output.find('[data-i18n]').i18n();
-
-			$_container.append($output);
-		}
-		else {
-			for (var i in __apiKeys) {
-				getUptime(__apiKeys[i]);
-			}
-
-			attachListners($('html'));
-
-			_intervalId = setInterval(countdown, 1000);
-		}
+		attachListners($('html'));
+		_intervalId = setInterval(countdown, 1000);
 	}
 
 	function attachListners($target) {
@@ -88,10 +76,10 @@ myApp.dashboard = (function($) {
 	}
 
 	/* load uptime variables from uptimerobot
-	* this calls jsonUptimeRobotApi() when loaded  
+	* this calls jsonUptimeRobotApi() when loaded
 	*/
 	function getUptime(apikey) {
-		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30-365&format=json&logs=1";
+		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-2-3-4-5-6-7-30&format=json&logs=1";
 		$.ajax({
 			url: url,
 			context: document.body,
@@ -101,35 +89,37 @@ myApp.dashboard = (function($) {
 
 	/* places the html on the page */
 	function placeServer(data) {
-		data.alert = "alert";
+		data.alert = "";
 		switch (parseInt(data.status, 10)) {
 			case 0:
-				data.statustxt = "Up-Time paused";
-				data.statusicon = "icon-pause";
-				data.label = "info";
+				data.statustxt = "未知";
+				data.statusicon = "question-sign";
+				data.label = "default";
 				break;
 			case 1:
-				data.statustxt = "Not checked yet";
-				data.statusicon = "icon-question";
+				data.statustxt = "未知";
+				data.statusicon = "question-sign";
 				data.label = "default";
 				break;
 			case 2:
-				data.statustxt = "Online";
-				data.statusicon = "icon-ok";
+				data.statustxt = "正常";
+				data.statusicon = "ok";
 				data.label = "success";
 				data.alert = "";
 				break;
 			case 8:
-				data.statustxt = "Seems offline";
-				data.statusicon = "icon-remove";
+				data.statustxt = "异常";
+				data.statusicon = "exclamation-sign";
 				data.label = "warning";
-				data.alert = "alert alert-warning";
+				data.alert = "warning";
+				error = true;
 				break;
 			case 9:
-				data.statustxt = "Offline";
-				data.statusicon = "icon-bolt";
+				data.statustxt = "故障";
+				data.statusicon = "remove";
 				data.label = "danger";
-				data.alert = "alert alert-danger";
+				data.alert = "danger";
+				error = true;
 				break;
 		}
 
@@ -142,7 +132,7 @@ myApp.dashboard = (function($) {
 			if (dateTime < lastMonth) {
 				data.log.splice(i, i + 1);
 			} else {
-				data.log[i].datetime = dateTime.toString("dd-MM-yyyy H:mm:ss");
+				data.log[i].datetime = ""+dateTime;
 			}
 		}
 		data.log = $.merge([], data.log); //make sure log is set
@@ -150,28 +140,37 @@ myApp.dashboard = (function($) {
 		// interface of log-stuf like icons
 		data.typeicon = getLogIcon;
 		data.labeltype = getLogType;
-		
+
 		// gather data for the graphs
 		var uptimes = data.customuptimeratio.split("-");
-		uptimes.push(data.alltimeuptimeratio);
+		for (var a=6; a>1; a--) {
+			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
+		}
+		var uptimeb = [];
+		for (a=0; a<uptimes.length; a++) {
+			if (uptimes[a]>=99.97) {
+				uptimeb[a] = "可用率 100%";
+			} else if (uptimes[a]>=99.5) {
+				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number((100-uptimes[a])*14.40).toFixed(0)+" 分钟";
+			} else if (uptimes[a]<=0) {
+				uptimeb[a] = "可用率 0.00%<br>故障 24 小时";
+			} else {
+				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number((100-uptimes[a])*0.24).toFixed(1)+" 小时";;
+			}
+		}
+		//uptimes.push(data.alltimeuptimeratio);
 		data.charts = [
-			{title: 'Last Day',  uptime: parseFloat(uptimes[0])},
-			{title: 'Last Week', uptime: parseFloat(uptimes[1])},
-			{title: 'Last Month',uptime: parseFloat(uptimes[2])},
-			{title: 'Last year', uptime: parseFloat(uptimes[3])},
-			{title: 'All Time',  uptime: parseFloat(uptimes[4])}
+			{title: '1', uptimes:uptimes[7], uptime: uptimeb[7], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '2', uptimes:uptimes[6], uptime: uptimeb[6], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '3', uptimes:uptimes[5], uptime: uptimeb[5], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '4', uptimes:uptimes[4], uptime: uptimeb[4], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '5', uptimes:uptimes[3], uptime: uptimeb[3], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '6', uptimes:uptimes[2], uptime: uptimeb[2], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: '7', uptimes:uptimes[1], uptime: uptimeb[1], uptype: getUptimeColor, upsign: getUptimeSign},
+			{title: 'all', uptimes:uptimes[0], uptime: uptimeb[0], uptype: getUptimeColor, upsign: getUptimeSign}
 		];
 
-		//render the sh!t
 		var $output = $(Mustache.render(_template, data));
-		
-		//initialize the graphs
-		placeCharts($output);
-
-		//translate
-		if (__language !== false) {
-			$output.find('[data-i18n]').i18n();
-		}
 
 		//attach popover listners
 		$output.find('a.log').click(function() {
@@ -185,52 +184,31 @@ myApp.dashboard = (function($) {
 
 		//append it in the container
 		$_container.append($output);
-
-		updateProgressBar();
-	}
-
-	/* place the chart */
-	function placeCharts($container) {
-		var options = {
-			lines: 12,
-			angle: 0.42,
-			lineWidth: 0.2,
-			limitMax: 'false',
-			colorStart: '#4DAD48',
-			colorStop: '#4DAD48',
-			strokeColor: '#E0E0E0',
-			generateGradient: false
-		};
-		$.each($container.find('.donut canvas'), function (key, el) {
-			var uptime = $(el).attr('uptime');
-
-			if (uptime <= 90) {
-				options.colorStart = '#dc554c'; //red
-				uptime = 90.01; //only show a red dot
-			} else if (uptime < 95) {
-				options.colorStart = '#3c89cc'; //blue
-			} else if (uptime < 99.5) {
-				options.colorStart = '#f2af46'; //yellow
+		_loaded++;
+		if (_loaded >= __apiKeys.length) {
+			_loaded = 0;
+			$('.set-tooltip').tooltip({html:true});
+			$('#stattip-load').addClass('hide');
+			if (error) {
+				$('#stattip-err').removeClass('hide');
+				$('#stattip-ok').addClass('hide');
 			} else {
-				options.colorStart = '#56b958'; //green
+				$('#stattip-ok').removeClass('hide');
+				$('#stattip-err').addClass('hide');
 			}
+		}
 
-			var gauge = new Donut(el).setOptions(options);
-
-			gauge.maxValue = 10;
-			gauge.animationSpeed = 1;
-			gauge.set(uptime - 90);
-		});
+		//updateProgressBar();
 	}
 
-	/* update progress bar of loaded servers */
+	/* update progress bar of loaded servers
 	function updateProgressBar() {
 		_loaded++;
 		$_prograss.css('width', Math.round(_loaded / __apiKeys.length) * 100 + '%');
 		if (_loaded >= __apiKeys.length) {
 			$_prograss.parent().slideUp();
 		}
-	}
+	}*/
 
 	/* count down till next refresh */
 	function countdown() {
@@ -241,12 +219,13 @@ myApp.dashboard = (function($) {
 
 		secs = (secs < 10) ? "0" + secs : secs;
 
-		$_countdown.width(100 - (elapsed * (100 / _refresh)) + '%');
-		$_lastUpdate.html(mins + ':' + secs);
+		//$_countdown.width(100 - (elapsed * (100 / _refresh)) + '%');
 
 		if (elapsed > _refresh) {
 			clearInterval(_intervalId);
 			init();
+		} else {
+			$_lastUpdate.html(mins + ':' + secs);
 		}
 	}
 
@@ -279,6 +258,28 @@ myApp.dashboard = (function($) {
 				return "default";
 			default:
 				return this.type;
+		}
+	}
+
+	function getUptimeColor() {
+		var upt = parseInt(this.uptimes, 10);
+		if (upt >= 99.90) {
+			return "success";
+		} else if (upt >= 98.00) {
+			return "warning";
+		} else {
+			return "danger";
+		}
+	}
+
+	function getUptimeSign() {
+		var upt = parseInt(this.uptimes, 10);
+		if (upt >= 99.90) {
+			return "ok-sign";
+		} else if (upt >= 98.00) {
+			return "exclamation-sign";
+		} else {
+			return "remove-sign";
 		}
 	}
 
