@@ -79,7 +79,7 @@ myApp.dashboard = (function($) {
 
 	/* places the html on the page */
 	function placeServer(data) {
-		data.alert = "alert";
+		data.alert = "";
 		switch (parseInt(data.status, 10)) {
 			case 0:
 				data.statustxt = "未知";
@@ -138,7 +138,6 @@ myApp.dashboard = (function($) {
 			{title: 'Last Month',uptime: parseFloat(uptimes[2]), uptype: getUptimeColor}
 		];
 
-		//render the sh!t
 		var $output = $(Mustache.render(_template, data));
 
 		//attach popover listners
