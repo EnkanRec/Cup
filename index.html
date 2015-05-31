@@ -12,6 +12,11 @@
   	display: inline-block;
   	margin-left: 30px;
   }
+	.donut .uptime {
+  	position: absolute;
+  	width: 90px;
+  	text-align: center;
+  }
 	</style>
 </head>
 
@@ -83,7 +88,7 @@
 				<div class="col-md-8 graphs">
 					{{#charts}}
 						<div class="donut">
-							<canvas width="90" height="90" uptime="{{uptime}}"></canvas>
+							<canvas width="30" height="30" uptime="{{uptime}}"></canvas>
 							<div class="uptime">
 								{{uptime}}%
 							</div>
