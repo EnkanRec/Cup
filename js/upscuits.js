@@ -69,7 +69,7 @@ myApp.dashboard = (function($) {
 	* this calls jsonUptimeRobotApi() when loaded
 	*/
 	function getUptime(apikey) {
-		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30&format=json&logs=1";
+		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-2-3-4-5-6-7-30&format=json&logs=1";
 		$.ajax({
 			url: url,
 			context: document.body,
@@ -131,11 +131,19 @@ myApp.dashboard = (function($) {
 
 		// gather data for the graphs
 		var uptimes = data.customuptimeratio.split("-");
-		uptimes.push(data.alltimeuptimeratio);
+		for (var a=1; a<6; a++) {
+			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
+		}
+		//uptimes.push(data.alltimeuptimeratio);
 		data.charts = [
-			{title: 'Last Day',  uptime: parseFloat(uptimes[0]), uptype: getUptimeColor},
-			{title: 'Last Week', uptime: parseFloat(uptimes[1]), uptype: getUptimeColor},
-			{title: 'Last Month',uptime: parseFloat(uptimes[2]), uptype: getUptimeColor}
+			{title: '1',  uptime: parseFloat(uptimes[0]), uptype: getUptimeColor},
+			{title: '2',  uptime: parseFloat(uptimes[1]), uptype: getUptimeColor},
+			{title: '3',  uptime: parseFloat(uptimes[2]), uptype: getUptimeColor},
+			{title: '4',  uptime: parseFloat(uptimes[3]), uptype: getUptimeColor},
+			{title: '5',  uptime: parseFloat(uptimes[4]), uptype: getUptimeColor},
+			{title: '6',  uptime: parseFloat(uptimes[5]), uptype: getUptimeColor},
+			{title: '7',  uptime: parseFloat(uptimes[6]), uptype: getUptimeColor},
+			{title: 'all',  uptime: parseFloat(uptimes[7]), uptype: getUptimeColor}                                                                                                                                                                                                             
 		];
 
 		var $output = $(Mustache.render(_template, data));
