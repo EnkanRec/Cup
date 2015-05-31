@@ -135,7 +135,7 @@ myApp.dashboard = (function($) {
 			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
 		}
 		for (a=0; a<uptimes.length; a++) {
-			if (uptimes[a]>=99.95) {
+			if (uptimes[a]>=99.97) {
 				uptimes[a] = "100";
 			} else if (uptimes[a]<0) {
 				uptimes[a] = "0.00";
@@ -234,9 +234,9 @@ myApp.dashboard = (function($) {
 
 	function getUptimeColor() {
 		var upt = parseInt(this.uptime, 10);
-		if (upt >= 99.5) {
+		if (upt >= 99.90) {
 			return "success";
-		} else if (upt >= 99) {
+		} else if (upt >= 98.00) {
 			return "warning";
 		} else {
 			return "danger";
