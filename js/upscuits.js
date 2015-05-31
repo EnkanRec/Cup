@@ -69,7 +69,7 @@ myApp.dashboard = (function($) {
 	* this calls jsonUptimeRobotApi() when loaded
 	*/
 	function getUptime(apikey) {
-		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30-365&format=json&logs=1";
+		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30&format=json&logs=1";
 		$.ajax({
 			url: url,
 			context: document.body,
@@ -135,9 +135,7 @@ myApp.dashboard = (function($) {
 		data.charts = [
 			{title: 'Last Day',  uptime: parseFloat(uptimes[0])},
 			{title: 'Last Week', uptime: parseFloat(uptimes[1])},
-			{title: 'Last Month',uptime: parseFloat(uptimes[2])},
-			{title: 'Last year', uptime: parseFloat(uptimes[3])},
-			{title: 'All Time',  uptime: parseFloat(uptimes[4])}
+			{title: 'Last Month',uptime: parseFloat(uptimes[2])}
 		];
 
 		//render the sh!t
