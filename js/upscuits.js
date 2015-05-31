@@ -138,7 +138,7 @@ myApp.dashboard = (function($) {
 			if (dateTime < lastMonth) {
 				data.log.splice(i, i + 1);
 			} else {
-				data.log[i].datetime = dateTime.toString("dd-MM-yyyy H:mm:ss");
+				data.log[i].datetime = dateTime.toString("yyyy-MM-dd H:mm:ss");
 			}
 		}
 		data.log = $.merge([], data.log); //make sure log is set
