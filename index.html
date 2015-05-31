@@ -7,6 +7,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<style>
+	.footer {
+  text-align: center;
+  padding-top: 16px;
+  width: 100%;
+  height: 50px;
+  }
+	</style>
 </head>
 <body>
 	<div class="navbar navbar-default navbar-static-top" role="navigation">
@@ -56,13 +64,13 @@
 			</table>
 		</div>
   </div>
-		<!-- count down timer + progress bar -->
-		<div class="col-md-2">
-			<span class="glyphicon glyphicon-refresh"></span> <span id="last-update"></span>
+	<div class="footer">
+		<div class="container">
+			<p><span class="glyphicon glyphicon-refresh"></span> <span id="last-update"></span></p>
+			<p>Powered by <a href="https://github.com/digibart/upscuits" target="_blank" class="navbar-link">Upscuits</a></p>
+			<p>© 2015 CoLab. All Rights Reserved.</p>
 		</div>
-		<div class="col-md-10">
-			<span>Powered by</span> <a href="https://uptimerobot.com" target="_blank" class="navbar-link"> UptimerRobot</a><span> and </span><a href="https://github.com/digibart/upscuits" target="_blank" class="navbar-link">Upscuits</a>
-		</div>
+	</div>
 	<script type="template/mustache" id="server-template">
 		<tr class="{{alert}}">
 			<td>
