@@ -43,33 +43,15 @@ myApp.dashboard = (function($) {
 		$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
 
-		//translation
-		$.i18n.init({
-				lng: __language,
-				fallbackLng: false,
-				detectLngQS: 'lang',
-				resGetPath: 'js/locales/__lng__-__ns__.json'
-			}, function(t) {
-				$('[data-i18n]').i18n();
-			});
 
-		if (typeof(__apiKeys) == "undefined" || __apiKeys.length < 1) {
-			var $output = $(Mustache.render($('#no-monitors-template').html()));
 
-			//translate
-			$output.find('[data-i18n]').i18n();
-
-			$_container.append($output);
+		for (var i in __apiKeys) {
+			getUptime(__apiKeys[i]);
 		}
-		else {
-			for (var i in __apiKeys) {
-				getUptime(__apiKeys[i]);
-			}
 
-			attachListners($('html'));
+		attachListners($('html'));
 
-			_intervalId = setInterval(countdown, 1000);
-		}
+		_intervalId = setInterval(countdown, 1000);
 	}
 
 	function attachListners($target) {
@@ -164,11 +146,6 @@ myApp.dashboard = (function($) {
 		//initialize the graphs
 		placeCharts($output);
 
-		//translate
-		if (__language !== false) {
-			$output.find('[data-i18n]').i18n();
-		}
-
 		//attach popover listners
 		$output.find('a.log').click(function() {
 			$(this).tooltip('hide');
@@ -189,7 +166,7 @@ myApp.dashboard = (function($) {
 	function placeCharts($container) {
 		var options = {
 			lines: 12,
-			angle: 0.42,
+			angle: 1,
 			lineWidth: 0.2,
 			limitMax: 'false',
 			colorStart: '#4DAD48',
