@@ -223,7 +223,7 @@ myApp.dashboard = (function($) {
 		} else if (upt >= 99) {
 			return "warning";
 		} else {
-			return "Danger";
+			return "danger";
 		}
 	}
 
