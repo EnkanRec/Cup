@@ -7,17 +7,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<style>
-	.donut {
-  	display: inline-block;
-  	margin-left: 30px;
-  }
-	.donut .uptime {
-  	position: absolute;
-  	width: 90px;
-  	text-align: center;
-  }
-	</style>
 </head>
 
 <body>
@@ -81,40 +70,37 @@
 		<div class="navbar-text"><span>Powered by</span> <a href="https://uptimerobot.com" target="_blank" class="navbar-link"> UptimerRobot</a><span> and </span><a href="https://github.com/digibart/upscuits" target="_blank" class="navbar-link">Upscuits</a></div>
 </div>
 	<script type="template/mustache" id="server-template">
-		<div class="well {{alert}}">
-			<div class="row">
-				<div class="col-md-4">
-					<h2>
-						{{friendlyname}}
-						<span class="label label-status label-{{label}}"><span class="glyphicon glyphicon-{{statusicon}}"></span></span>
-					</h2>
-
-					<div class="btn-group">
-						<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><span class="glyphicon glyphicon-time"></span></a>
-					</div>
-					<div class="log{{id}} hide">
-						<ul class="list-unstyled">
-							{{#log}}
-								<li>
-									<span class="btn btn-xs btn-{{labeltype}}"><span class="glyphicon glyphicon-{{typeicon}}"></span></span>
-									&nbsp;{{datetime}}
-								</li>
-							{{/log}}
-						</ul>
+		<tr class="{{alert}}">
+			<td>
+				{{friendlyname}}
+				<div class="btn-group">
+					<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><span class="glyphicon glyphicon-time"></span></a>
+				</div>
+				<div class="log{{id}} hide">
+					<ul class="list-unstyled">
+						{{#log}}
+							<li>
+								<span class="btn btn-xs btn-{{labeltype}}"><span class="glyphicon glyphicon-{{typeicon}}"></span></span>
+								&nbsp;{{datetime}}
+							</li>
+						{{/log}}
+					</ul>
+				</div>
+			</td>
+			<td>
+				<span class="label label-status label-{{label}}"><span class="glyphicon glyphicon-{{statusicon}}"></span></span>
+			</td>
+			{{#charts}}
+			<td>
+				<div class="donut">
+					<canvas width="30" height="30" uptime="{{uptime}}"></canvas>
+					<div class="uptime">
+						{{uptime}}%
 					</div>
 				</div>
-				<div class="col-md-8 graphs">
-					{{#charts}}
-						<div class="donut">
-							<canvas width="30" height="30" uptime="{{uptime}}"></canvas>
-							<div class="uptime">
-								{{uptime}}%
-							</div>
-						</div>
-					{{/charts}}
-				</div>
-			</div>
-		</div>
+			</td>
+			{{/charts}}
+		</tr>
 	</script>
 	<script src="js/jquery-1.11.3.min.js?rel=1.4.4" type="text/javascript"></script>
 	<script src="js/bootstrap.min.js?rel=1.4.4" type="text/javascript"></script>

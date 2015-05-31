@@ -84,12 +84,12 @@ myApp.dashboard = (function($) {
 			case 0:
 				data.statustxt = "Up-Time paused";
 				data.statusicon = "question-sign";
-				data.label = "info";
+				data.label = "";
 				break;
 			case 1:
 				data.statustxt = "Not checked yet";
 				data.statusicon = "question-sign";
-				data.label = "default";
+				data.label = "";
 				break;
 			case 2:
 				data.statustxt = "Online";
@@ -101,13 +101,13 @@ myApp.dashboard = (function($) {
 				data.statustxt = "Seems offline";
 				data.statusicon = "exclamation-sign";
 				data.label = "warning";
-				data.alert = "alert alert-warning";
+				data.alert = "warning";
 				break;
 			case 9:
 				data.statustxt = "Offline";
 				data.statusicon = "remove";
 				data.label = "danger";
-				data.alert = "alert alert-danger";
+				data.alert = "danger";
 				break;
 		}
 
