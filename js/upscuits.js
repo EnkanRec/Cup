@@ -83,29 +83,29 @@ myApp.dashboard = (function($) {
 		switch (parseInt(data.status, 10)) {
 			case 0:
 				data.statustxt = "Up-Time paused";
-				data.statusicon = "icon-pause";
+				data.statusicon = "question-sign";
 				data.label = "info";
 				break;
 			case 1:
 				data.statustxt = "Not checked yet";
-				data.statusicon = "icon-question";
+				data.statusicon = "question-sign";
 				data.label = "default";
 				break;
 			case 2:
 				data.statustxt = "Online";
-				data.statusicon = "icon-ok";
+				data.statusicon = "ok";
 				data.label = "success";
 				data.alert = "";
 				break;
 			case 8:
 				data.statustxt = "Seems offline";
-				data.statusicon = "icon-remove";
+				data.statusicon = "exclamation-sign";
 				data.label = "warning";
 				data.alert = "alert alert-warning";
 				break;
 			case 9:
 				data.statustxt = "Offline";
-				data.statusicon = "icon-bolt";
+				data.statusicon = "remove";
 				data.label = "danger";
 				data.alert = "alert alert-danger";
 				break;
@@ -164,7 +164,7 @@ myApp.dashboard = (function($) {
 	function placeCharts($container) {
 		var options = {
 			lines: 12,
-			angle: 0.42,
+			angle: 0.5,
 			lineWidth: 0.2,
 			limitMax: 'false',
 			colorStart: '#4DAD48',
