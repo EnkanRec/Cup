@@ -12,8 +12,7 @@
 <body>
 	<div class="container">
 		<div class="jumbotron">
-			<h1><i class="icon-dashboard icon-red"></i> 酷Q状态 <small></small></h1>
-			<p></p>
+			<h1>酷Q状态</h1>
 		</div>
 
 		<!-- progress bar of loaded servers -->
@@ -43,7 +42,7 @@
 
 		<!-- count down timer + progress bar -->
 		<div class="col-md-2">
-			<i class="icon-refresh"></i> <span id="last-update"></span>
+			<span class="glyphicon glyphicon-refresh"></span> <span id="last-update"></span>
 		</div>
 		<div class="progress">
 			<div class="progress-bar progress-bar-info countdown" role="progressbar" aria-valuemin="0" aria-valuemax="100">
@@ -58,17 +57,17 @@
 				<div class="col-md-4">
 					<h2>
 						{{friendlyname}}
-						<span class="label label-status label-{{label}}"><i class="{{statusicon}}"></i></span>
+						<span class="label label-status label-{{label}}"><span class="glyphicon glyphicon-{{statusicon}}"></span></span>
 					</h2>
 
 					<div class="btn-group">
-						<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><i class="icon-time"></i></a>
+						<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><span class="glyphicon glyphicon-time"></span></a>
 					</div>
 					<div class="log{{id}} hide">
 						<ul class="list-unstyled">
 							{{#log}}
 								<li>
-									<span class="btn btn-xs btn-{{labeltype}}"><i class="icon-{{typeicon}} icon-white"></i></span>
+									<span class="btn btn-xs btn-{{labeltype}}"><span class="glyphicon glyphicon-{{typeicon}}"></span></span>
 									&nbsp;{{datetime}}
 								</li>
 							{{/log}}
