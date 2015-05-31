@@ -133,16 +133,13 @@ myApp.dashboard = (function($) {
 		var uptimes = data.customuptimeratio.split("-");
 		uptimes.push(data.alltimeuptimeratio);
 		data.charts = [
-			{title: 'Last Day',  uptime: parseFloat(uptimes[0])},
-			{title: 'Last Week', uptime: parseFloat(uptimes[1])},
-			{title: 'Last Month',uptime: parseFloat(uptimes[2])}
+			{title: 'Last Day',  uptime: parseFloat(uptimes[0]), uptype: getUptimeColor()},
+			{title: 'Last Week', uptime: parseFloat(uptimes[1]), uptype: getUptimeColor()},
+			{title: 'Last Month',uptime: parseFloat(uptimes[2]), uptype: getUptimeColor()}
 		];
 
 		//render the sh!t
 		var $output = $(Mustache.render(_template, data));
-
-		//initialize the graphs
-		placeCharts($output);
 
 		//attach popover listners
 		$output.find('a.log').click(function() {
@@ -158,40 +155,6 @@ myApp.dashboard = (function($) {
 		$_container.append($output);
 
 		updateProgressBar();
-	}
-
-	/* place the chart */
-	function placeCharts($container) {
-		var options = {
-			lines: 6,
-			angle: 0.5,
-			lineWidth: 0.1,
-			limitMax: 'false',
-			colorStart: '#4DAD48',
-			colorStop: '#4DAD48',
-			strokeColor: '#E0E0E0',
-			generateGradient: false
-		};
-		$.each($container.find('.donut canvas'), function (key, el) {
-			var uptime = $(el).attr('uptime');
-
-			if (uptime <= 90) {
-				options.colorStart = '#dc554c'; //red
-				uptime = 90.01; //only show a red dot
-			} else if (uptime < 95) {
-				options.colorStart = '#3c89cc'; //blue
-			} else if (uptime < 99.5) {
-				options.colorStart = '#f2af46'; //yellow
-			} else {
-				options.colorStart = '#56b958'; //green
-			}
-
-			var gauge = new Donut(el).setOptions(options);
-
-			gauge.maxValue = 10;
-			gauge.animationSpeed = 1;
-			gauge.set(uptime - 90);
-		});
 	}
 
 	/* update progress bar of loaded servers */
@@ -250,6 +213,17 @@ myApp.dashboard = (function($) {
 				return "default";
 			default:
 				return this.type;
+		}
+	}
+
+	function getUptimeColor() {
+		var upt = parseInt(this.type, 10);
+		if (upt >= 99.5) {
+			return "success";
+		} else if (upt >= 99) {
+			return "warning";
+		} else
+			return "Danger";
 		}
 	}
 

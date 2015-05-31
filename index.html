@@ -72,7 +72,7 @@
 	<script type="template/mustache" id="server-template">
 		<tr class="{{alert}}">
 			<td>
-				{{friendlyname}}
+				<b>{{friendlyname}}</b>
 				<!--<div class="btn-group">
 					<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><span class="glyphicon glyphicon-time"></span></a>
 				</div>
@@ -92,12 +92,7 @@
 			</td>
 			{{#charts}}
 			<td>
-				<div class="donut">
-					<canvas width="30" height="30" uptime="{{uptime}}"></canvas>
-					<div class="uptime">
-						{{uptime}}%
-					</div>
-				</div>
+			<span class="label label-{{uptype}}"{{uptime}}%</span>
 			</td>
 			{{/charts}}
 		</tr>
@@ -105,7 +100,6 @@
 	<script src="js/jquery-1.11.3.min.js?rel=1.4.4" type="text/javascript"></script>
 	<script src="js/bootstrap.min.js?rel=1.4.4" type="text/javascript"></script>
 	<script src="js/mustache.min.js?rel=1.4.4" type="text/javascript"></script>
-	<script src="js/gauge.min.js?rel=1.4.4" type="text/javascript"></script>
 	<script src="js/config.js?rel=1.4.4" type="text/javascript"></script>
 	<script src="js/upscuits.js?rel=1.4.4" type="text/javascript"></script>
 	<script type="text/javascript">
