@@ -31,7 +31,7 @@ myApp.dashboard = (function($) {
 		_start = Date.now(),
 		_refresh = ((typeof(__refresh) == "number") ? __refresh : 300),
 		$_container = {},
-		$_prograss = {},
+		//$_prograss = {},
 		//$_countdown = {},
 		$_lastUpdate = {};
 
@@ -39,7 +39,7 @@ myApp.dashboard = (function($) {
 		_start = Date.now();
 		_template = $('#server-template').html();
 		$_container = $('#server-container').html('');
-		$_prograss = $('.loading');
+		//$_prograss = $('.loading');
 		//$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
 
@@ -153,17 +153,17 @@ myApp.dashboard = (function($) {
 		//append it in the container
 		$_container.append($output);
 
-		updateProgressBar();
+		//updateProgressBar();
 	}
 
-	/* update progress bar of loaded servers */
+	/* update progress bar of loaded servers
 	function updateProgressBar() {
 		_loaded++;
 		$_prograss.css('width', Math.round(_loaded / __apiKeys.length) * 100 + '%');
 		if (_loaded >= __apiKeys.length) {
 			$_prograss.parent().slideUp();
 		}
-	}
+	}*/
 
 	/* count down till next refresh */
 	function countdown() {
