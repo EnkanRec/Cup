@@ -1,27 +1,3 @@
-/*
-
-	Upscuits | short for uptime-biscuit
-	A quick overview of your server's uptime served on a nice dinner-tray.
-
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	--
-
-	@file		upsuits.js
-	@date		Tue Mar 31 2015 21:05:54
-	@author		Pixel Bakkerij
-
-	Copyright (c) 2013 Pixel Bakkerij <http://pixelbakkerij.nl>
-
-*/
 window.myApp = window.myApp || {};
 myApp.dashboard = (function($) {
 
@@ -35,6 +11,7 @@ myApp.dashboard = (function($) {
 		//$_countdown = {},
 		$_lastUpdate = {},
 		$_servertitle = {},
+		showarr = [],
 		tmpdate,
 		datestr = "",
 		error = false;
@@ -46,18 +23,20 @@ myApp.dashboard = (function($) {
 		//$_prograss = $('.loading');
 		//$_countdown = $('.countdown');
 		$_lastUpdate = $('#last-update');
+		showarr = [];
+
 		$_servertitle.append("<th style=\"width:20%\"></th>");
 		$_servertitle.append("<th style=\"width:10%\">近30天</th>");
 		for (var d=6;d>=0;d--) {
 			tmpdate = new Date(Date.parse(new Date().toString()) - 86400000*d);
-			datestr = (tmpdate.getMonth()+1) + "." + tmpdate.getDate();
+			datestr = (tmpdate.getMonth()+1) + "-" + tmpdate.getDate();
 			$_servertitle.append("<th style=\"width:10%\">"+datestr+"</th>");
 		}
 		error = false;
 
 
 		for (var i in __apiKeys) {
-			getUptime(__apiKeys[i]);
+			getUptime(__apiKeys[i], i);
 		}
 
 		attachListners($('html'));
@@ -78,17 +57,20 @@ myApp.dashboard = (function($) {
 	/* load uptime variables from uptimerobot
 	* this calls jsonUptimeRobotApi() when loaded
 	*/
-	function getUptime(apikey) {
-		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-2-3-4-5-6-7-30&format=json&logs=1";
+	function getUptime(apikey, ids) {
+		var url = "//api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-2-3-4-5-6-7-30&format=json&logs=1&noJsonCallback=1";
 		$.ajax({
 			url: url,
 			context: document.body,
-			dataType: 'jsonp'
+			dataType: "json",
+			success: function (str) {
+				placeServer(str.monitors.monitor[0], ids);
+			}
 		});
 	}
 
 	/* places the html on the page */
-	function placeServer(data) {
+	function placeServer(data, ids) {
 		data.alert = "";
 		switch (parseInt(data.status, 10)) {
 			case 0:
@@ -136,7 +118,82 @@ myApp.dashboard = (function($) {
 			}
 		}
 		data.log = $.merge([], data.log); //make sure log is set
+		console.log(data.log);
+		var endtime,endtype,starttime,starttype,fintime,period,fin = [],lastlen = 1;
+		period = 86400000*1;
+		endtime = Date.parse(new Date().toString());
+		fintime = endtime - period;
+		starttime = fintime;
+		if (!data.log.length) {
+			switch (parseInt(data.status, 10)) {
+				case 2:
+				starttype = 2; //green
+				break;
+				case 8:
+				case 9:
+				starttype = 1; //red;
+				break;
+				default:
+				starttype = 0; //grey
+			}
+			fin.push({type:starttype, len:1, left:fintime, right:endtime})
+		} else {
+			for (var r=0;r<data.log.length;r++) {
+				starttime = data.log[r].datetime;
+				if (starttime<fintime) {
+					starttime = fintime;
+				}
+				endtype = data.log[r].type;
+				switch (parseInt(endtype, 10)) {
+					case 1:
+					endtype = 1; //grey
+					break;
+					case 2:
+					endtype = 2; //green
+					break;
+					default:
+					endtype = 0; //grey
+				}
+				lastlen = lastlen-(endtime-starttime)/period;
+				if (fin.length > 0 && fin[fin.length-1].type==endtype) {
+					fin[fin.length-1].len += (endtime-starttime)/period;
+					fin[fin.length-1].left = starttime;
+				} else {
+					fin.push({type:endtype, len:(endtime-starttime)/period, left:starttime, right:endtime});
+				}
+				endtime = starttime;
+				if (starttime <= fintime) {
+					break;
+				}
+			}
+			if (starttime > fintime) {
+				switch (parseInt(endtype, 10)) {
+					case 1:
+					starttype = 2; //grey
+					break;
+					case 2:
+					starttype = 1; //green
+					break;
+					default:
+					starttype = 0; //grey
+				}
+				if (fin.length > 0 && fin[fin.length-1].type==endtype) {
+					fin[fin.length-1].len += lastlen;
+					fin[fin.length-1].left = fintime;
+				} else {
+					fin.push({type:starttype, len:lastlen, start:fintime, end:fin[fin.length-1].left});
+				}
 
+			}
+		}
+		console.log(fin);
+		var st;
+		data.progress=[];
+		while(st = fin.pop()) {
+			data.progress.push({type:st.type,types:getLogType,len:(st.len*100).toString(),
+													stattip:Type2Word(parseInt(st.type))+" ("+num2string(st.left)+" ~ "+num2string(st.right)+")"
+			})
+		}
 		// interface of log-stuf like icons
 		data.typeicon = getLogIcon;
 		data.labeltype = getLogType;
@@ -169,7 +226,7 @@ myApp.dashboard = (function($) {
 			{title: '7', uptimes:uptimes[1], uptime: uptimeb[1], uptype: getUptimeColor, upsign: getUptimeSign},
 			{title: 'all', uptimes:uptimes[0], uptime: uptimeb[0], uptype: getUptimeColor, upsign: getUptimeSign}
 		];
-
+		console.log(data);
 		var $output = $(Mustache.render(_template, data));
 
 		//attach popover listners
@@ -183,7 +240,17 @@ myApp.dashboard = (function($) {
 		attachListners($output);
 
 		//append it in the container
-		$_container.append($output);
+		showarr[ids] = $output;
+		for (var k=0;k<__apiKeys.length;k++) {
+			if (showarr[k] == undefined) {
+				break;
+			} else if (showarr[k] == true) {
+				continue;
+			} else {
+				$_container.append(showarr[k]);
+				showarr[k] = true;
+			}
+		}
 		_loaded++;
 		if (_loaded >= __apiKeys.length) {
 			_loaded = 0;
@@ -253,12 +320,33 @@ myApp.dashboard = (function($) {
 			case 2:
 				return "success";
 			case 99:
-				return "info";
+				return "default";
 			case 98:
 				return "default";
 			default:
-				return this.type;
+				return "default";
 		}
+	}
+
+	function Type2Word(t) {
+		switch (t) {
+			case 1:
+				return "故障";
+			case 2:
+				return "正常";
+			case 99:
+				return "未知";
+			case 98:
+				return "未知";
+			default:
+				return "未知";
+		}
+	}
+
+	function num2string(num) {
+		tmpdate = new Date(parseInt(num));
+		datestr = (tmpdate.getMonth()+1) + "-" + tmpdate.getDate() + " " + tmpdate.getHours() +":"+(tmpdate.getMinutes()<10?"0"+tmpdate.getMinutes():tmpdate.getMinutes());
+	  return datestr;
 	}
 
 	function getUptimeColor() {
@@ -289,10 +377,3 @@ myApp.dashboard = (function($) {
 		placeServer: placeServer
 	};
 }(jQuery));
-
-/* function called from the uptimerequest */
-function jsonUptimeRobotApi(data) {
-	for (var i in data.monitors.monitor) {
-			myApp.dashboard.placeServer(data.monitors.monitor[i]);
-		}
-	}

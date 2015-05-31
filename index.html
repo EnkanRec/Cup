@@ -30,6 +30,9 @@
 		text-align: center;
 		vertical-align: middle;
 	}
+	.check .sertitle {
+		vertical-align: middle;
+	}
 	.status-success {
   	color: #5cb85c
 	}
@@ -38,6 +41,26 @@
 	}
 	.status-danger {
   	color: #d9534f
+	}
+	.barl > td {
+		border-top: none !important;
+		padding: 0 !important;
+	}
+	.barl .progress {
+		margin:0;
+		border-radius:0;
+		height: 8px;
+		box-shadow: none;
+	}
+	.barl .progress .progress-bar {
+		box-shadow: none;
+		opacity: 0.7;
+	}
+	.barl .progress .progress-bar:hover {
+		opacity: 1;
+	}
+	.barl .progress .progress-bar-default {
+		background-color: #EFEFEF;
 	}
 	</style>
 </head>
@@ -94,7 +117,7 @@
 	</div>
 	<script type="template/mustache" id="server-template">
 		<tr class="{{alert}}">
-			<td>
+			<td rowspan="2" class="sertitle">
 				<span class="label label-status label-{{label}}"><span class="glyphicon glyphicon-{{statusicon}}"></span> {{statustxt}}</span>
 				<span class="wname">{{friendlyname}}</span>
 				<!--<div class="btn-group">
@@ -116,6 +139,15 @@
 			<span class="status-{{uptype}} set-tooltip" data-toggle="tooltip" data-placement="top" title="{{uptime}}"><span class="glyphicon glyphicon-{{upsign}}"></span></span>
 			</td>
 			{{/charts}}
+		</tr>
+		<tr class="{{alert}} barl">
+			<td colspan="8" class="barls">
+	  		<div class="progress">
+			  {{#progress}}
+  				<div class="progress-bar progress-bar-{{types}} set-tooltip" style="width: {{len}}%" data-toggle="tooltip" data-placement="top" title="{{stattip}}"></div>
+			  {{/progress}}
+			 </div>
+			</td>
 		</tr>
 	</script>
 	<script src="js/jquery-1.11.3.min.js?rel=1.4.4" type="text/javascript"></script>
