@@ -133,17 +133,22 @@ myApp.dashboard = (function($) {
 		var uptimes = data.customuptimeratio.split("-");
 		for (var a=6; a>1; a--) {
 			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
+			if (uptimes[a]>100) {
+				uptimes[a]=100;
+			} else if (uptimes[a]<0){
+				uptimes[a]=0;
+			}
 		}
 		//uptimes.push(data.alltimeuptimeratio);
 		data.charts = [
-			{title: '1',  uptime: parseFloat(uptimes[0]), uptype: getUptimeColor},
-			{title: '2',  uptime: parseFloat(uptimes[1]), uptype: getUptimeColor},
-			{title: '3',  uptime: parseFloat(uptimes[2]), uptype: getUptimeColor},
-			{title: '4',  uptime: parseFloat(uptimes[3]), uptype: getUptimeColor},
-			{title: '5',  uptime: parseFloat(uptimes[4]), uptype: getUptimeColor},
-			{title: '6',  uptime: parseFloat(uptimes[5]), uptype: getUptimeColor},
-			{title: '7',  uptime: parseFloat(uptimes[6]), uptype: getUptimeColor},
-			{title: 'all',  uptime: parseFloat(uptimes[7]), uptype: getUptimeColor}
+			{title: '1',  uptime: parseFloat(uptimes[0].toFixed(2)), uptype: getUptimeColor},
+			{title: '2',  uptime: parseFloat(uptimes[1].toFixed(2)), uptype: getUptimeColor},
+			{title: '3',  uptime: parseFloat(uptimes[2].toFixed(2)), uptype: getUptimeColor},
+			{title: '4',  uptime: parseFloat(uptimes[3].toFixed(2)), uptype: getUptimeColor},
+			{title: '5',  uptime: parseFloat(uptimes[4].toFixed(2)), uptype: getUptimeColor},
+			{title: '6',  uptime: parseFloat(uptimes[5].toFixed(2)), uptype: getUptimeColor},
+			{title: '7',  uptime: parseFloat(uptimes[6].toFixed(2)), uptype: getUptimeColor},
+			{title: 'all',  uptime: parseFloat(uptimes[7].toFixed(2)), uptype: getUptimeColor}
 		];
 
 		var $output = $(Mustache.render(_template, data));
