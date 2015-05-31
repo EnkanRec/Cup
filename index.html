@@ -14,6 +14,9 @@
   width: 100%;
   height: 50px;
   }
+	.wname {
+		font-size:15px;
+	}
 	</style>
 </head>
 <body>
@@ -41,7 +44,6 @@
 		</div>
 	</div>
 	<div class="container">
-		<!-- progress bar of loaded servers -->
 		<div class="progress">
 			<div class="progress-bar progress-bar-info loading bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
 				<span class="sr-only"></span>
@@ -54,7 +56,7 @@
 				<thead>
 					<tr>
 						<th style="width:20%">名称</th>
-						<th style="width:20%">当前状态</th>
+						<th style="width:20%">状态</th>
 						<th style="width:20%">过去24小时</th>
 						<th style="width:20%">过去7天</th>
 						<th style="width:20%">过去30天</th>
@@ -74,7 +76,7 @@
 	<script type="template/mustache" id="server-template">
 		<tr class="{{alert}}">
 			<td>
-				<b>{{friendlyname}}</b>
+				<span class="wname">{{friendlyname}}</span>
 				<!--<div class="btn-group">
 					<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><span class="glyphicon glyphicon-time"></span></a>
 				</div>
