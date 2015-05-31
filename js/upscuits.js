@@ -82,29 +82,29 @@ myApp.dashboard = (function($) {
 		data.alert = "alert";
 		switch (parseInt(data.status, 10)) {
 			case 0:
-				data.statustxt = "Up-Time paused";
+				data.statustxt = "未知";
 				data.statusicon = "question-sign";
 				data.label = "";
 				break;
 			case 1:
-				data.statustxt = "Not checked yet";
+				data.statustxt = "未知";
 				data.statusicon = "question-sign";
 				data.label = "";
 				break;
 			case 2:
-				data.statustxt = "Online";
+				data.statustxt = "正常";
 				data.statusicon = "ok";
 				data.label = "success";
 				data.alert = "";
 				break;
 			case 8:
-				data.statustxt = "Seems offline";
+				data.statustxt = "异常";
 				data.statusicon = "exclamation-sign";
 				data.label = "warning";
 				data.alert = "warning";
 				break;
 			case 9:
-				data.statustxt = "Offline";
+				data.statustxt = "故障";
 				data.statusicon = "remove";
 				data.label = "danger";
 				data.alert = "danger";
