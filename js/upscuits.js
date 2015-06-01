@@ -39,21 +39,8 @@ myApp.dashboard = (function($) {
 			getUptime(__apiKeys[i], i);
 		}
 
-		attachListners($('html'));
 		_intervalId = setInterval(countdown, 1000);
 	}
-
-	function attachListners($target) {
-		$target.find('.tip').tooltip({
-			placement: 'bottom'
-		});
-		$target.find('body').mouseup(function(event) {
-			if ($('.popover-inner').length) {
-				$('a.log').popover('hide');
-			}
-		});
-	}
-
 	/* load uptime variables from uptimerobot
 	* this calls jsonUptimeRobotApi() when loaded
 	*/
@@ -114,7 +101,7 @@ myApp.dashboard = (function($) {
 			if (dateTime < lastMonth) {
 				data.log.splice(i, i + 1);
 			} else {
-				data.log[i].datetime = ""+dateTime;
+				data.log[i].datetime = dateTime;
 			}
 		}
 		data.log = $.merge([], data.log); //make sure log is set
@@ -130,7 +117,7 @@ myApp.dashboard = (function($) {
 				break;
 				case 8:
 				case 9:
-				starttype = 1; //red;
+				starttype = 1; //red
 				break;
 				default:
 				starttype = 0; //grey
@@ -185,32 +172,42 @@ myApp.dashboard = (function($) {
 
 			}
 		}
-		var st;
+		var st,temptip;
 		data.progress=[];
 		while(st = fin.pop()) {
+			temptip = ""+Type2Word(parseInt(st.type),true);
+			if (st.len == 1) {
+				temptip += " (近24小时)"
+			} else {
+				if (st.right-st.left < 1000*3540) {
+					temptip += " ("+new Number((st.right-st.left)/(1000*60)).toFixed(0)+" 分钟)";
+				} else {
+					temptip += " ("+new Number((st.right-st.left)/(1000*3600)).toFixed(1)+" 小时)";
+				}
+				temptip += "<br><span class=\"ttime\">"+num2string(st.left)+" ~ "+num2string(st.right)+"</span>";
+			}
+
 			data.progress.push({type:st.type,types:getLogType,len:(st.len*100).toString(),
-													stattip:Type2Word(parseInt(st.type))+" ("+num2string(st.left)+" ~ "+num2string(st.right)+")"
+													stattip:temptip
 			})
 		}
-		// interface of log-stuf like icons
-		data.typeicon = getLogIcon;
-		data.labeltype = getLogType;
-
 		// gather data for the graphs
 		var uptimes = data.customuptimeratio.split("-");
 		for (var a=6; a>1; a--) {
 			uptimes[a] = uptimes[a]*(a+1)-uptimes[a-1]*(a);
 		}
-		var uptimeb = [];
+		var uptimeb = [],th,tm;
 		for (a=0; a<uptimes.length; a++) {
-			if (uptimes[a]>=99.97) {
+			tm = (100-uptimes[a])*(a==uptimes.length-1?14.40*30:14.40);
+			th = tm/60;
+			if (uptimes[a]>=99.95) {
 				uptimeb[a] = "可用率 100%";
-			} else if (uptimes[a]>=99.5) {
-				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number((100-uptimes[a])*14.40).toFixed(0)+" 分钟";
 			} else if (uptimes[a]<=0) {
-				uptimeb[a] = "可用率 0.00%<br>故障 24 小时";
+				uptimeb[a] = "可用率 0.00%<br>故障 "+(a==uptimes.length-1?'720 小时':'24 小时');
+			} else if (tm<60) {
+				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number(tm).toFixed(0)+" 分钟";
 			} else {
-				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number((100-uptimes[a])*0.24).toFixed(1)+" 小时";;
+				uptimeb[a] = "可用率 "+new Number(uptimes[a]).toFixed(2)+"%<br>故障 "+new Number(th).toFixed(1)+" 小时";
 			}
 		}
 		//uptimes.push(data.alltimeuptimeratio);
@@ -225,16 +222,6 @@ myApp.dashboard = (function($) {
 			{title: 'all', uptimes:uptimes[0], uptime: uptimeb[0], uptype: getUptimeColor, upsign: getUptimeSign}
 		];
 		var $output = $(Mustache.render(_template, data));
-
-		//attach popover listners
-		$output.find('a.log').click(function() {
-			$(this).tooltip('hide');
-		}).popover({
-			placement: 'bottom',
-			html: true,
-			content: $output.find('div.log' + data.id).html()
-		});
-		attachListners($output);
 
 		//append it in the container
 		showarr[ids] = $output;
@@ -262,17 +249,7 @@ myApp.dashboard = (function($) {
 			}
 		}
 
-		//updateProgressBar();
 	}
-
-	/* update progress bar of loaded servers
-	function updateProgressBar() {
-		_loaded++;
-		$_prograss.css('width', Math.round(_loaded / __apiKeys.length) * 100 + '%');
-		if (_loaded >= __apiKeys.length) {
-			$_prograss.parent().slideUp();
-		}
-	}*/
 
 	/* count down till next refresh */
 	function countdown() {
@@ -293,22 +270,6 @@ myApp.dashboard = (function($) {
 		}
 	}
 
-	/* set the icon in front of every log-line */
-	function getLogIcon() {
-		switch (parseInt(this.type, 10)) {
-			case 1:
-				return "chevron-down";
-			case 2:
-				return "chevron-up";
-			case 99:
-				return "pause";
-			case 98:
-				return "play";
-			default:
-				return this.type;
-		}
-	}
-
 	/* give the icon in front of log line a nice color */
 	function getLogType() {
 		switch (parseInt(this.type, 10)) {
@@ -325,18 +286,18 @@ myApp.dashboard = (function($) {
 		}
 	}
 
-	function Type2Word(t) {
+	function Type2Word(t,icon) {
 		switch (t) {
 			case 1:
-				return "故障";
+				return (icon?"<span class=\"glyphicon glyphicon-remove-sign\"></span> ":"")+"故障";
 			case 2:
-				return "正常";
-			case 99:
-				return "未知";
-			case 98:
-				return "未知";
+				return (icon?"<span class=\"glyphicon glyphicon-ok-sign\"></span> ":"")+"正常";
+			//case 99:
+			//	return "未知";
+			//case 98:
+			//	return "未知";
 			default:
-				return "未知";
+				return (icon?"<span class=\"glyphicon glyphicon-question-sign\"></span> ":"")+"未知";
 		}
 	}
 
@@ -347,7 +308,7 @@ myApp.dashboard = (function($) {
 	}
 
 	function getUptimeColor() {
-		var upt = parseInt(this.uptimes, 10);
+		var upt = this.uptimes;
 		if (upt >= 99.90) {
 			return "success";
 		} else if (upt >= 98.00) {
@@ -358,7 +319,7 @@ myApp.dashboard = (function($) {
 	}
 
 	function getUptimeSign() {
-		var upt = parseInt(this.uptimes, 10);
+		var upt = this.uptimes;
 		if (upt >= 99.90) {
 			return "ok-sign";
 		} else if (upt >= 98.00) {
@@ -368,9 +329,7 @@ myApp.dashboard = (function($) {
 		}
 	}
 
-	//expose dashboard (PUBLIC API)
 	return {
-		init: init,
-		placeServer: placeServer
+		init: init
 	};
 }(jQuery));
