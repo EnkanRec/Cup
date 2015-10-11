@@ -8,6 +8,7 @@ var __apiKeys = [
 	'm776858321-486827042ed7a7f7b8952a05', //Auth B
 	'm776858322-0e2c3f842139c06f56f7f56a', //Auth C
 	'm776858323-0bdafb9e9a71e3305c27c1af', //Auth D
+	'm777138853-9ba502b46477b46d6998b115'  //Auth E
 ];
 
 // refresh interval (in seconds)
