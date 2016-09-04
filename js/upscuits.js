@@ -207,7 +207,7 @@ myApp.dashboard = (function($) {
         for (a = 0; a < uptimes.length; a++) {
             tm = (100 - uptimes[a]) * (a == uptimes.length - 1 ? 14.40 * 30 : 14.40);
             th = tm / 60;
-            if (uptimes[a] >= 99.95) {
+            if (uptimes[a] >= 99.97) {
                 uptimeb[a] = "可用率 100%";
             } else if (uptimes[a] <= 0) {
                 uptimeb[a] = "可用率 0.00%<br>故障 " + (a == uptimes.length - 1 ? '720 小时' : '24 小时');
