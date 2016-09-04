@@ -5,6 +5,6 @@ Status
 
 [演示](http://status.cqp.cc)
 
-== License
+## License
 
 This work is licensed under [GPLv3](https://github.com/Coxxs/status/blob/master/LICENSE)
