@@ -5,9 +5,9 @@ Status
 
 ## 使用方法
 
-* 注册 [UptimeRobot](https://uptimerobot.com/)，获取 (Monitor-Specific API Keys)[https://uptimerobot.com/dashboard.php#mySettings]；
-* 将 API Keys 填入 `js/config.js`；
-* 修改 index.html`内的页面标题等信息；
+* 注册 [UptimeRobot](https://uptimerobot.com/)，获取 (Monitor-Specific API Keys)[https://uptimerobot.com/dashboard.php#mySettings] ；
+* 将 `API Keys` 填入 `js/config.js`；
+* 修改 `index.html` 内的页面标题等信息；
 * 完成！
 
 ## 演示
