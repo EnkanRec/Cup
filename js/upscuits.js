@@ -201,7 +201,7 @@ myApp.dashboard = (function($) {
         // gather data for the graphs
         var uptimes = data.customuptimeratio.split("-");
         for (var a = 6; a > 1; a--) {
-            uptimes[a] = uptimes[a] * (a + 1) - uptimes[a - 1] * (a);
+            uptimes[a] = uptimes[a] * (a) - uptimes[a - 1] * (a - 1);
         }
         var uptimeb = [], th, tm;
         for (a = 0; a < uptimes.length; a++) {
