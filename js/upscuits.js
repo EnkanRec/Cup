@@ -25,8 +25,8 @@ myApp.dashboard = (function($) {
 		$_lastUpdate = $('#last-update');
 		showarr = [];
 
-		$_servertitle.append("<th style=\"width:20%\"></th>");
-		$_servertitle.append("<th style=\"width:10%\">近30天</th>");
+		$_servertitle.append("<th style=\"width:21%\"></th>");
+		$_servertitle.append("<th style=\"width:9%\">近30日</th>");
 		for (var d=6;d>=0;d--) {
 			tmpdate = new Date(Date.parse(new Date().toString()) - 86400000*d);
 			datestr = (tmpdate.getMonth()+1) + "-" + tmpdate.getDate();

@@ -69,6 +69,18 @@
 		color: #A3A3A3;
     font-size: 11px;
 	}
+	.credit {
+		font-size: 12px;
+		color: #BBB;
+	}
+	.credit a {
+		color: #999;
+	}
+	.credit .pipe {
+		padding-left: 6px;
+		padding-right: 6px;
+		color: #CCC;
+	}
 	</style>
 </head>
 <body>
@@ -118,8 +130,7 @@
 	<div class="footer">
 		<div class="container">
 			<p><span class="glyphicon glyphicon-refresh"></span> <span id="last-update"></span></p>
-			<p>Powered by <a href="https://github.com/digibart/upscuits" target="_blank">Upscuits</a> &amp; Designed by <a href="http://coxxs.me" target="_blank">Coxxs</a></p>
-			<p>© 2015 CoLab. All Rights Reserved.</p>
+			<p class="credit">Powered by <a href="https://github.com/digibart/upscuits" target="_blank">Upscuits</a><span class="pipe">/</span>Designed by <a href="http://coxxs.me" target="_blank">Coxxs</a><span class="pipe">/</span><a href="https://github.com/Coxxs/status/master/LICENSE" target="_blank">GPLv3</a><span class="pipe">/</span><a href="https://github.com/Coxxs/status" target="_blank">GitHub</a></p>
 		</div>
 	</div>
 	<script type="template/mustache" id="server-template">
@@ -144,7 +155,7 @@
 			</td>
 		</tr>
 	</script>
-	<script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+	<script src="js/jquery-1.12.4.min.js" type="text/javascript"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="js/mustache.min.js" type="text/javascript"></script>
 	<script src="js/config.js" type="text/javascript"></script>

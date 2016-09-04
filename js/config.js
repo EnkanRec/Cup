@@ -1,9 +1,10 @@
 // array of Monitor-specific API keys or Main API key to list all monitors
 var __apiKeys = [
-	'm776858319-7c829d2c3e250f85776f588e', //BBS
-	'm776858325-1ddf7c7e98ce56609325db3b', //Doku
+	'm776858319-7c829d2c3e250f85776f588e', //Community
+	'm776858325-1ddf7c7e98ce56609325db3b', //Document
 	'm776858327-19b31e671f6b217b8ded96c6', //Me
-	'm776858407-a704cd548fb5c15db5b625f9', //Update
+	'm776858407-a704cd548fb5c15db5b625f9', //Update A
+	'm778126978-24e6f1ce275c2518bad1e925', //Update B
 	'm777157148-a67f71b8a807c54b8ce92c9d', //Update deliver A
 	'm777157137-ce781489d1af15253ca3f0c1', //Update deliver B
 	'm776858320-7b44f9ac136f69ac3e356e8e', //Auth A
