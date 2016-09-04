@@ -100,7 +100,6 @@
 					<li><a href="http://cqp.cc/">首页</a></li>
 					<li><a href="http://cqp.cc/forum.php">社区</a></li>
 					<li><a href="http://cqp.cc/b-70-1">应用</a></li>
-					<li><a href="https://g.cqp.cc/user">购买</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 				</ul>
@@ -108,25 +107,29 @@
 		</div>
 	</div>
 	<div class="container">
-		<div id="stattip-err" class="alert alert-warning hide" role="alert">
-			<b>当前状态：</b>酷Q部分服务发生异常，我们将尽快修复。
+		<div class="row">
+			<div class="col-lg-8 col-lg-offset-2">
+				<div id="stattip-err" class="alert alert-warning hide" role="alert">
+					<b>当前状态：</b>酷Q部分服务发生异常，我们将尽快修复。
+				</div>
+				<div id="stattip-ok" class="alert alert-success hide" role="alert">
+					<b>当前状态：</b>酷Q所有服务正常运行中，没有发现异常。
+				</div>
+				<div id="stattip-load" class="alert alert-info" role="alert">
+					<b>当前状态：</b>正在检测运行状态，请稍候..
+				</div>
+				<div class="table-responsive">
+					<table class="table table-hover check">
+						<thead>
+							<tr id="server-title">
+							</tr>
+						</thead>
+						<tbody id="server-container"></tbody>
+					</table>
+				</div>
+			</div>
 		</div>
-		<div id="stattip-ok" class="alert alert-success hide" role="alert">
-			<b>当前状态：</b>酷Q所有服务正常运行中，没有发现异常。
-		</div>
-		<div id="stattip-load" class="alert alert-info" role="alert">
-			<b>当前状态：</b>正在检测运行状态，请稍候..
-		</div>
-		<div class="table-responsive">
-			<table class="table table-hover check">
-				<thead>
-					<tr id="server-title">
-					</tr>
-				</thead>
-				<tbody id="server-container"></tbody>
-			</table>
-		</div>
-  </div>
+	</div>
 	<div class="footer">
 		<div class="container">
 			<p><span class="glyphicon glyphicon-refresh"></span> <span id="last-update"></span></p>
