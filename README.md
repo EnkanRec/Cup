@@ -16,4 +16,4 @@ Status
 
 ## License
 
-This work is licensed under [GPLv3](https://github.com/Coxxs/status/blob/master/LICENSE)
+This work is licensed under [GPLv3](https://github.com/Coxxs/status/blob/master/LICENSE).
