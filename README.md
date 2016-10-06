@@ -3,6 +3,8 @@ Status
 
 基于 [Upscuits](https://github.com/digibart/upscuits)，以 [UptimeRobot](https://uptimerobot.com/) 为数据源的在线状态统计页面。
 
+**2016-10-6** Uptime Robot 已经新增 Public Status Pages 功能，详见 [官网](http://blog.uptimerobot.com/introducing-public-status-pages-yay/)。
+
 ## 使用方法
 
 1. 注册 [UptimeRobot](https://uptimerobot.com/)，获取 [Monitor-Specific API Keys](https://uptimerobot.com/dashboard.php#mySettings)
