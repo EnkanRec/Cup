@@ -2,7 +2,7 @@
 
 基于 [Upscuits](https://github.com/digibart/upscuits)，以 [UptimeRobot](https://uptimerobot.com/) 为数据源的在线状态统计页面。
 
-**2016-10-6** Uptime Robot 已经新增 Public Status Pages 功能，详见 [官网](http://blog.uptimerobot.com/introducing-public-status-pages-yay/)。
+**2016-10-6** Uptime Robot 已经新增 Public Status Pages 功能，详见 [官网](https://blog.uptimerobot.com/introducing-public-status-pages-yay/)。
 
 **2019-2-15** Cup 已更新 Uptime Robot APIv2，请用户尽快更新，官方已停止支持 APIv1。
 
@@ -15,8 +15,8 @@
 
 ## 演示
 
-[酷Q状态](http://status.cqp.cc)
+[酷Q状态](https://status.cqp.cc)
 
 ## License
 
-This work is licensed under [GPLv3](https://github.com/Coxxs/status/blob/master/LICENSE).
+This work is licensed under [GPLv3](https://github.com/CoolQ/Cup/blob/master/LICENSE).
