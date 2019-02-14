@@ -26,7 +26,6 @@ myApp.dashboard = (function($) {
   * this calls jsonUptimeRobotApi() when loaded
   */
   function getUptime(apikey, ids) {
-    var url = "https://api.uptimerobot.com/getMonitors?";
     $.post({
       url: 'https://api.uptimerobot.com/v2/getMonitors',
       data: 'api_key=' + apikey + '&custom_uptime_ratios=1-2-3-4-5-6-7-30&format=json&logs=1&logs_limit=100',
