@@ -5,6 +5,8 @@ Cup
 
 **2016-10-6** Uptime Robot 已经新增 Public Status Pages 功能，详见 [官网](http://blog.uptimerobot.com/introducing-public-status-pages-yay/)。
 
+**2019-2-15** Cup 已更新 Uptime Robot APIv2，请用户尽快更新，避免未来旧版 APIv1 失效。
+
 ## 使用方法
 
 1. 注册 [UptimeRobot](https://uptimerobot.com/)，获取 [Monitor-Specific API Keys](https://uptimerobot.com/dashboard.php#mySettings)
