@@ -1,14 +1,26 @@
 window.myApp = window.myApp || {};
 myApp.dashboard = (function($) {
-  var _template = "", _loaded = 0, _intervalId = 0, _start = Date.now(), _refresh = ((typeof (__refresh) == "number") ? __refresh : 300), $_container = {}, 
-  $_lastUpdate = {}, $_servertitle = {}, showarr = [], tmpdate, datestr = "", error = false;
+  var _template = "";
+  var _loaded = 0;
+  var _intervalId = 0;
+  var _start = Date.now();
+  var _refresh = ((typeof (__refresh) == "number") ? __refresh : 300);
+  var _uptimeRanges = "";
+  var $_container = {};
+  var $_lastUpdate = {};
+  var $_servertitle = {};
+  var showQueue = [];
+  var tmpdate;
+  var datestr = "";
+  var _hasError = false;
+
   function init() {
     _start = Date.now();
     _template = $('#server-template').html();
     $_container = $('#server-container').html('');
     $_servertitle = $('#server-title').html('');
     $_lastUpdate = $('#last-update');
-    showarr = [];
+
     $_servertitle.append("<th style=\"width:21%\"></th>");
     $_servertitle.append("<th style=\"width:9%\">近30日</th>");
     for (var d = 6; d >= 0; d--) {
@@ -16,59 +28,86 @@ myApp.dashboard = (function($) {
       datestr = (tmpdate.getMonth() + 1) + "-" + tmpdate.getDate();
       $_servertitle.append("<th style=\"width:10%\">" + datestr + "</th>");
     }
-    error = false;
+    _uptimeRanges = getUptimeRanges();
+
+    showQueue = [];
+    _hasError = false;
+
     for (var i in __apiKeys) {
       getUptime(__apiKeys[i], i);
     }
     _intervalId = setInterval(countdown, 1000);
   }
+  function getUptimeRanges() {
+    var now = +new Date();
+    var midnight = +(new Date).setHours(0, 0, 0, 0);
+    now = Math.floor(now / 1000);
+    midnight = Math.floor(midnight / 1000);
+
+    var r = []; // custom_uptime_ranges
+    r.push((now - 86400 * 30) + '_' + now);
+    r.push((midnight - 86400 * 6) + '_' + (midnight - 86400 * 5 - 1));
+    r.push((midnight - 86400 * 5) + '_' + (midnight - 86400 * 4 - 1));
+    r.push((midnight - 86400 * 4) + '_' + (midnight - 86400 * 3 - 1));
+    r.push((midnight - 86400 * 3) + '_' + (midnight - 86400 * 2 - 1));
+    r.push((midnight - 86400 * 2) + '_' + (midnight - 86400 * 1 - 1));
+    r.push((midnight - 86400 * 1) + '_' + (midnight - 86400 * 0 - 1));
+    if (now === midnight) now += 1;
+    r.push(midnight + '_' + now);
+    return r.join('-');
+  }
   /* load uptime variables from uptimerobot
-  * this calls jsonUptimeRobotApi() when loaded
   */
-  function getUptime(apikey, ids) {
+  function getUptime(apikey, id) {
     $.post({
       url: 'https://api.uptimerobot.com/v2/getMonitors',
-      data: 'api_key=' + apikey + '&custom_uptime_ratios=1-2-3-4-5-6-7-30&format=json&logs=1&logs_limit=100',
+      data: 'api_key=' + apikey + '&custom_uptime_ranges=' + _uptimeRanges + '&format=json&logs=1&logs_limit=100',
       dataType: 'json',
       success: function(str) {
-        placeServer(str.monitors[0], ids);
+        var htmls = [];
+        for (var i in str.monitors) {
+          htmls.push(buildServerHTML(str.monitors[i]));
+        }
+        showQueue[id] = { id: id, htmls: htmls, shown: false };
+        updatePage();
       }
     });
   }
-  /* places the html on the page */
-  function placeServer(data, ids) {
+
+  /* build the html */
+  function buildServerHTML(data, ids) {
     data.alert = "";
     switch (parseInt(data.status, 10)) {
-    case 0:
-      data.statustext = "未知";
-      data.statusicon = "question-sign";
-      data.label = "default";
-      break;
-    case 1:
-      data.statustext = "未知";
-      data.statusicon = "question-sign";
-      data.label = "default";
-      break;
-    case 2:
-      data.statustext = "正常";
-      data.statusicon = "ok";
-      data.label = "success";
-      data.alert = "";
-      break;
-    case 8:
-      data.statustext = "异常";
-      data.statusicon = "exclamation-sign";
-      data.label = "warning";
-      data.alert = "warning";
-      error = true;
-      break;
-    case 9:
-      data.statustext = "故障";
-      data.statusicon = "remove";
-      data.label = "danger";
-      data.alert = "danger";
-      error = true;
-      break;
+      case 0:
+        data.statustext = "未知";
+        data.statusicon = "question-sign";
+        data.label = "default";
+        break;
+      case 1:
+        data.statustext = "未知";
+        data.statusicon = "question-sign";
+        data.label = "default";
+        break;
+      case 2:
+        data.statustext = "正常";
+        data.statusicon = "ok";
+        data.label = "success";
+        data.alert = "";
+        break;
+      case 8:
+        data.statustext = "异常";
+        data.statusicon = "exclamation-sign";
+        data.label = "warning";
+        data.alert = "warning";
+        _hasError = true;
+        break;
+      case 9:
+        data.statustext = "故障";
+        data.statusicon = "remove";
+        data.label = "danger";
+        data.alert = "danger";
+        _hasError = true;
+        break;
     }
 
     //make sure log is set
@@ -181,56 +220,63 @@ myApp.dashboard = (function($) {
       })
     }
     // gather data for the graphs
-    var uptimes = data.custom_uptime_ratio.split("-");
-    for (var a = 6; a >= 1; a--) {
-      uptimes[a] = uptimes[a] * (a + 1) - uptimes[a - 1] * (a);
-    }
-    var uptimetext = [], th, tm;
+    var uptimes = data.custom_uptime_ranges.split("-");
+    var uptimetext = [], hours, minutes;
     for (a = 0; a < uptimes.length; a++) {
-      tm = (100 - uptimes[a]) * (a == uptimes.length - 1 ? 14.40 * 30 : 14.40);
-      th = tm / 60;
-      if (uptimes[a] >= 99.97) {
+      minutes = (100 - uptimes[a]) * (a === 0 ? 14.40 * 30 : 14.40);
+      hours = minutes / 60;
+      if (uptimes[a] >= 99.99) {
         uptimetext[a] = "可用率 100%";
       } else if (uptimes[a] <= 0) {
         uptimetext[a] = "可用率 0.00%<br>故障 " + (a == uptimes.length - 1 ? '720 小时' : '24 小时');
-      } else if (tm < 60) {
-        uptimetext[a] = "可用率 " + new Number(uptimes[a]).toFixed(2) + "%<br>故障 " + new Number(tm).toFixed(0) + " 分钟";
+      } else if (minutes < 60) {
+        uptimetext[a] = "可用率 " + new Number(uptimes[a]).toFixed(2) + "%<br>故障 " + new Number(minutes).toFixed(0) + " 分钟";
       } else {
-        uptimetext[a] = "可用率 " + new Number(uptimes[a]).toFixed(2) + "%<br>故障 " + new Number(th).toFixed(1) + " 小时";
+        uptimetext[a] = "可用率 " + new Number(uptimes[a]).toFixed(2) + "%<br>故障 " + new Number(hours).toFixed(1) + " 小时";
       }
     }
     //uptimes.push(data.alltimeuptimeratio);
     data.charts = [
-      { title: '1', uptime: uptimes[7], uptimetext: uptimetext[7], uptype: getUptimeColor, upsign: getUptimeSign },
-      { title: '2', uptime: uptimes[6], uptimetext: uptimetext[6], uptype: getUptimeColor, upsign: getUptimeSign },
-      { title: '3', uptime: uptimes[5], uptimetext: uptimetext[5], uptype: getUptimeColor, upsign: getUptimeSign },
-      { title: '4', uptime: uptimes[4], uptimetext: uptimetext[4], uptype: getUptimeColor, upsign: getUptimeSign },
-      { title: '5', uptime: uptimes[3], uptimetext: uptimetext[3], uptype: getUptimeColor, upsign: getUptimeSign },
-      { title: '6', uptime: uptimes[2], uptimetext: uptimetext[2], uptype: getUptimeColor, upsign: getUptimeSign },
-      { title: '7', uptime: uptimes[1], uptimetext: uptimetext[1], uptype: getUptimeColor, upsign: getUptimeSign },
-      { title: 'all', uptime: uptimes[0], uptimetext: uptimetext[0], uptype: getUptimeColor, upsign: getUptimeSign }
+      { uptime: uptimes[0], uptimetext: uptimetext[0], uptype: getUptimeColor, upsign: getUptimeSign },
+      { uptime: uptimes[1], uptimetext: uptimetext[1], uptype: getUptimeColor, upsign: getUptimeSign },
+      { uptime: uptimes[2], uptimetext: uptimetext[2], uptype: getUptimeColor, upsign: getUptimeSign },
+      { uptime: uptimes[3], uptimetext: uptimetext[3], uptype: getUptimeColor, upsign: getUptimeSign },
+      { uptime: uptimes[4], uptimetext: uptimetext[4], uptype: getUptimeColor, upsign: getUptimeSign },
+      { uptime: uptimes[5], uptimetext: uptimetext[5], uptype: getUptimeColor, upsign: getUptimeSign },
+      { uptime: uptimes[6], uptimetext: uptimetext[6], uptype: getUptimeColor, upsign: getUptimeSign },
+      { uptime: uptimes[7], uptimetext: uptimetext[7], uptype: getUptimeColor, upsign: getUptimeSign }
     ];
     var $output = $(Mustache.render(_template, data));
+    return $output;
+
+
+  }
+  /* display the html on the page */
+  function updatePage() {
     //append it in the container
-    showarr[ids] = $output;
+    var finished = false;
     for (var k = 0; k < __apiKeys.length; k++) {
-      if (showarr[k] == undefined) {
+      if (showQueue[k] == undefined) {
         break;
-      } else if (showarr[k] == true) {
+      } else if (showQueue[k].shown === true) {
         continue;
       } else {
-        $_container.append(showarr[k]);
-        showarr[k] = true;
+        for (var i in showQueue[k].htmls) {
+          $_container.append(showQueue[k].htmls[i]);
+        }
+        showQueue[k].shown = true;
+      }
+      if (k === __apiKeys.length - 1) {
+        finished = true;
       }
     }
-    _loaded++;
-    if (_loaded >= __apiKeys.length) {
-      _loaded = 0;
+
+    if (finished) {
       $('.set-tooltip').tooltip({
         html: true
       });
       $('#stattip-load').addClass('hide');
-      if (error) {
+      if (_hasError) {
         $('#stattip-err').removeClass('hide');
         $('#stattip-ok').addClass('hide');
       } else {
@@ -241,10 +287,10 @@ myApp.dashboard = (function($) {
   }
   /* count down till next refresh */
   function countdown() {
-    var now = Date.now()
-      , elapsed = parseInt((now - _start) / 1000, 10)
-      , mins = Math.floor((_refresh - elapsed) / 60)
-      , secs = _refresh - (mins * 60) - elapsed;
+    var now = Date.now();
+    var elapsed = parseInt((now - _start) / 1000, 10);
+    var mins = Math.floor((_refresh - elapsed) / 60);
+    var secs = _refresh - (mins * 60) - elapsed;
     secs = (secs < 10) ? "0" + secs : secs;
     if (elapsed > _refresh) {
       clearInterval(_intervalId);
@@ -289,7 +335,7 @@ myApp.dashboard = (function($) {
   }
   function getUptimeColor() {
     var upt = this.uptime;
-    if (upt >= 99.90) {
+    if (upt >= 99.99) {
       return "success";
     } else if (upt >= 98.00) {
       return "warning";
@@ -299,7 +345,7 @@ myApp.dashboard = (function($) {
   }
   function getUptimeSign() {
     var upt = this.uptime;
-    if (upt >= 99.90) {
+    if (upt >= 99.99) {
       return "ok-sign";
     } else if (upt >= 98.00) {
       return "exclamation-sign";
