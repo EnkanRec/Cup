@@ -30,6 +30,7 @@ myApp.dashboard = (function($) {
     }
     _uptimeRanges = getUptimeRanges();
 
+    _loaded = 0;
     showQueue = [];
     _hasError = false;
 
@@ -248,13 +249,11 @@ myApp.dashboard = (function($) {
     ];
     var $output = $(Mustache.render(_template, data));
     return $output;
-
-
   }
+
   /* display the html on the page */
   function updatePage() {
     //append it in the container
-    var finished = false;
     for (var k = 0; k < __apiKeys.length; k++) {
       if (showQueue[k] == undefined) {
         break;
@@ -265,13 +264,11 @@ myApp.dashboard = (function($) {
           $_container.append(showQueue[k].htmls[i]);
         }
         showQueue[k].shown = true;
-      }
-      if (k === __apiKeys.length - 1) {
-        finished = true;
+        _loaded++;
       }
     }
 
-    if (finished) {
+    if (_loaded === __apiKeys.length) {
       $('.set-tooltip').tooltip({
         html: true
       });
