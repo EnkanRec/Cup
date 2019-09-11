@@ -7,6 +7,7 @@ var __apiKeys = [
 	'm778126978-24e6f1ce275c2518bad1e925', //Update B
 	'm777157148-a67f71b8a807c54b8ce92c9d', //Update deliver A
 	'm777157137-ce781489d1af15253ca3f0c1', //Update deliver B
+	'm783440738-5d66a6c6630333b0268ee437', //Update deliver C
 	'm776858320-7b44f9ac136f69ac3e356e8e', //Auth A
 	'm776858321-486827042ed7a7f7b8952a05', //Auth B
 	'm778734196-a51947f061c5db10cee048f7', //Auth C
