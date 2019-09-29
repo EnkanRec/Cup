@@ -229,7 +229,7 @@ myApp.dashboard = (function($) {
     for (a = 0; a < uptimes.length; a++) {
       if (a === 0) { // last 30 days
         minutes = (100 - uptimes[a]) / 100 * 1440 * 30;
-      } else if (a === 6) { // today
+      } else if (a === 7) { // today
         minutes = (100 - uptimes[a]) / 100 * (_secondsToday / 60);
       } else {
         minutes = (100 - uptimes[a]) / 100 * 1440;
