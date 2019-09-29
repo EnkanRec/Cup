@@ -6,6 +6,7 @@ myApp.dashboard = (function($) {
   var _start = Date.now();
   var _refresh = ((typeof (__refresh) == "number") ? __refresh : 300);
   var _uptimeRanges = "";
+  var _secondsToday = 0;
   var $_container = {};
   var $_lastUpdate = {};
   var $_servertitle = {};
@@ -28,7 +29,9 @@ myApp.dashboard = (function($) {
       datestr = (tmpdate.getMonth() + 1) + "-" + tmpdate.getDate();
       $_servertitle.append("<th style=\"width:10%\">" + datestr + "</th>");
     }
-    _uptimeRanges = getUptimeRanges();
+    var ranges = getUptimeRanges();
+    _uptimeRanges = ranges.ranges;
+    _secondsToday = ranges.secondsToday;
 
     _loaded = 0;
     showQueue = [];
@@ -55,7 +58,7 @@ myApp.dashboard = (function($) {
     r.push((midnight - 86400 * 1) + '_' + (midnight - 86400 * 0 - 1));
     if (now === midnight) now += 1;
     r.push(midnight + '_' + now);
-    return r.join('-');
+    return { ranges: r.join('-'), secondsToday: now - midnight };
   }
   /* load uptime variables from uptimerobot
   */
@@ -224,12 +227,16 @@ myApp.dashboard = (function($) {
     var uptimes = data.custom_uptime_ranges.split("-");
     var uptimetext = [], hours, minutes;
     for (a = 0; a < uptimes.length; a++) {
-      minutes = (100 - uptimes[a]) * (a === 0 ? 14.40 * 30 : 14.40);
+      if (a === 0) { // last 30 days
+        minutes = (100 - uptimes[a]) / 100 * 1440 * 30;
+      } else if (a === 6) { // today
+        minutes = (100 - uptimes[a]) / 100 * (_secondsToday / 60);
+      } else {
+        minutes = (100 - uptimes[a]) / 100 * 1440;
+      }
       hours = minutes / 60;
       if (uptimes[a] >= 99.99) {
         uptimetext[a] = "可用率 100%";
-      } else if (uptimes[a] <= 0) {
-        uptimetext[a] = "可用率 0.00%<br>故障 " + (a == uptimes.length - 1 ? '720 小时' : '24 小时');
       } else if (minutes < 60) {
         uptimetext[a] = "可用率 " + new Number(uptimes[a]).toFixed(2) + "%<br>故障 " + new Number(minutes).toFixed(0) + " 分钟";
       } else {
